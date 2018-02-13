@@ -18,6 +18,6 @@ export default {
   bottom:0;
   height:4em;
   width:100%;
-  background-color:#06070a;
+  background-color:#215292;
 }
 </style>

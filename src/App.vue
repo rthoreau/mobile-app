@@ -69,11 +69,11 @@ html, body{
   height:100%;
 }
 body{
-  background-color:#0c1219;
+  background-color:#0a0a0a;
   margin:0;
   font-family:  Arial, sans-serif;
   text-align: center;
-  color: #4b69af;
+  color: #7c9bbb;
 }
 #app{
   padding:4em 0;
@@ -92,13 +92,17 @@ body{
   top:4rem;
   height:4rem;
   width:100%;
-  background-color:#0d367d;
+  background-color:#5d9cec;
+  box-sizing:border-box;
+  box-shadow:inset -5px 8px 15px -10px black;
+  z-index:100;
 }
 .page-content{
   display:inline-block;
   padding:0.8rem 4%;
   width:100%;
   overflow:scroll;
+  margin:4rem 0;
 }
 .page-header + .page-content{
   margin-top:4em;
@@ -106,13 +110,20 @@ body{
 .page-title{
   font-size:1.8rem;
   line-height:4rem;
-  color:#849acc;
+  color:white;
 }
-.page-header .submenu{
+.page-header .submenu-link{
   position:absolute;
   height:50%;
-  fill:#849acc;
+  fill:white;
   top:25%;
   right:5%;
+}
+
+.sp{
+  background-color:#4CAF50;
+}
+.yt{
+  background-color:#C62828;
 }
 </style>

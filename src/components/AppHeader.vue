@@ -34,7 +34,7 @@ export default {
     top:0;
     width:100%;
     height:4em;
-    background-color:#06070a;
+    background-color:#4b89dc;
     z-index:100;
   }
   #appHeader ul{
@@ -68,7 +68,7 @@ export default {
     width:0;
     transform:translate(-50%,0);
     height:0.1rem;
-    background-color:#005de2;
+    background-color:#215292;
     transition:width 0.5s;
   }
   #appHeader a.router-link-exact-active:after{
@@ -80,6 +80,6 @@ export default {
     transition:fill 0.5s;
   }
   #appHeader a.router-link-exact-active svg{
-    fill:#005de2;
+    fill:#215292;
   }
 </style>
