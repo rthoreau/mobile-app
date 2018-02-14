@@ -1,29 +1,38 @@
 <template>
-  <div id="favorite">
-    <header class="page-header"><span class="page-title">Favoris</span><svg class="submenu-link" viewBox="0 0 7.234 31.32" @click="submenu()"><use xlink:href="#icon-submenu"></use></svg></header>
-    <SubMenu v-show="submenuVisible"></SubMenu>
+  <div id="search">
+    <header class="page-header">
+      <span class="page-title">
+        <input 
+        placeholder="Recherche..." 
+        class="search-input" 
+        ref="searchInput" 
+        v-model="searchValue"
+        @keyup.enter="search()"
+        v-bind:class="searchValue.length ? 'fill' : ''"><label @click="focusSearch()"><svg viewBox="0 0 29.648 34.728" class="search-icon" ><use xlink:href="#icon-search"></use></svg></label>
+      </span>
+    </header>
     <div class="page-content">
       <MusicItem 
-      v-for="(music, index) in musics" 
+      v-for="(music, index) in searchResult" 
       v-bind:key="index" 
       v-bind:data="music"></MusicItem>
+      <p v-if="searchResult.length === 0">You just want your music ?<br> Change source to your phone !</p>
     </div>
   </div>
 </template>
 
 <script>
 import MusicItem from '../components/MusicItem';
-import SubMenu from '../components/SubMenu';
 
 export default {
-  name: 'Favorite',
+  name: 'Search',
   components:{
-    MusicItem,
-    SubMenu
+    MusicItem
   },
   data(){
     return{
-      submenuVisible:false,
+      searchValue:'',
+      searchResult:[],
       musics:[
         {url:"https://www.youtube.com/watch?v=rVeMiVU77wo", title:"alt-J (∆) Breezeblocks", author:"alt-J", date: "2012-03-23", duration : "3:46", thumbnail:"http://www.konbini.com/wp-content/blogs.dir/3/files/2012/06/Alt-j-Breezeblocks-480x279.jpg", plateform:'lo'},
         {url:"https://www.youtube.com/watch?v=pliDsyfUXcg", title:"Indie Indie Folk - Summer 2015 Tracklist Included", author:"Fernando Bueno", date: "2015-07-18", duration : "1:55:49", thumbnail:"https://i9.ytimg.com/sb/ZwBkXgWNs_M/storyboard3_L2/M0.jpg?sigh=rs%24AOn4CLBUyfI7x8IRqXF_2NdPeIb3UX8tKw", plateform:'yt'},
@@ -39,12 +48,61 @@ export default {
     };
   },
   methods:{
-    submenu(){
-      this.submenuVisible = this.submenuVisible ? false : true;
+    search(){
+      var searchValueParsed = this.searchValue.toLowerCase();
+      if (searchValueParsed.length < 3){
+        console.log('Dude ! Give me the at least 3 chars ! :o');
+        return;
+      }
+      this.searchResult = this.musics.filter(music => (music.title.toLowerCase().indexOf(searchValueParsed) > -1 || music.author.toLowerCase().indexOf(searchValueParsed) > -1));
+    },
+    focusSearch(){
+      if(this.searchValue.length){
+        this.search();
+      }else{
+        this.$refs.searchInput.focus();
+      }
     },
   }
 }
 </script>
 
 <style>
+  .search-input{
+    font-size:1.8rem;
+    background-color:transparent;
+    -webkit-appearance: none;
+    box-shadow: none;
+    border:none;
+    outline:none;
+    color:white;
+    border-bottom:2px solid transparent;
+    width:50%;
+    transition:width 0.8s;
+    vertical-align: middle;
+    padding:0.1rem 2%;
+    margin-right:2%;
+  }
+  .search-input.fill{
+    width:80%;
+  }
+  .search-input:focus{
+    width:80%;
+    border-bottom-color:#215292;
+  }
+  #search .page-title label{
+    background-color:transparent;
+    -webkit-appearance: none;
+    border:none;
+    padding:0;
+    vertical-align: middle;
+    display:inline-block;
+    height:2rem;
+    width:8%;
+    font-size:0;
+  }
+  .search-icon{
+    fill:white;
+    height:100%;
+  }
 </style>

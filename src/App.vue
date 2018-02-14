@@ -69,7 +69,7 @@ html, body{
   height:100%;
 }
 body{
-  background-color:#0a0a0a;
+  background-color:#18222d;
   margin:0;
   font-family:  Arial, sans-serif;
   text-align: center;
@@ -120,10 +120,26 @@ body{
   right:5%;
 }
 
+*::-webkit-input-placeholder {
+  color: rgba(235,245,255,0.5);
+}
+*:-moz-placeholder {
+  color: rgba(235,245,255,0.5);
+}
+*::-moz-placeholder {
+  color: rgba(235,245,255,0.5);
+}
+*:-ms-input-placeholder {
+  color: rgba(235,245,255,0.5);
+}
+
 .sp{
   background-color:#4CAF50;
 }
 .yt{
   background-color:#C62828;
+}
+.lo{
+  background-color:#5d9cec;
 }
 </style>

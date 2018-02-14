@@ -20,7 +20,7 @@ export default {
   background-color:white;
   position:fixed;
   top:8rem;
-  right:0;
+  right:0.5rem;
   z-index:100;
 }
 .submenu ul{
