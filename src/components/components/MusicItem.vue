@@ -1,7 +1,11 @@
 <template>
   <div class="music-item">
     <div class="music-plateform" v-bind:class="data.plateform"></div>
-    <img v-bind:src="data.thumbnail" alt="" class="music-thumbnail">
+    <div class="music-thumbnail-container">
+      <transition name="appear">
+        <img v-bind:src="data.thumbnail" alt="" class="music-thumbnail" v-if="loaded">
+      </transition>
+    </div>
     <div class="music-content">
       <span class="music-title">{{data.title}}</span>
       <span class="music-author">{{data.author}}</span>
@@ -16,6 +20,16 @@ export default {
   name: 'MusicItem',
   props:{
     data:Object,
+  },
+  data(){
+    return{
+      loaded:false,
+    }
+  },
+  mounted() {
+    setTimeout(() => {
+      this.loaded = true;
+    }, 1000);
   }
 }
 </script>
@@ -31,17 +45,32 @@ export default {
   height:3.5rem;
   left:0;
   top:0;
-  z-index:10;
-  width:0.5rem;
-  opacity:0.8;
+  z-index:0;
+  width:4rem;
 }
-.music-thumbnail{
+.music-thumbnail-container{
   position:relative;
   width:3.5rem;
   height:3.5rem;
   display:inline-block;
   object-fit:cover;
   margin:0 0.8rem 0 0.5rem;
+  text-align:right;
+}
+.music-thumbnail{
+  width:100%;
+  height:100%;
+  display:inline-block;
+  background-color:#545436;
+  object-fit:cover;
+}
+.appear-enter-active,
+.appear-leave-active{
+  transition: all 0.8s;
+}
+.appear-enter,
+.appear-leave-to{
+  width:0%;
 }
 .music-content{
   display:inline-block;
@@ -56,16 +85,5 @@ export default {
 }
 .music-title{
   font-weight:bold;
-}
-@keyframes appear {
-  0% {
-    width: 4em;
-  }
-  60% {
-    width: 4em;
-  }
-  100% {
-    width: 0.5em;
-  }
 }
 </style>

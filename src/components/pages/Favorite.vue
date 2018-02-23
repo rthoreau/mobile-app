@@ -3,10 +3,10 @@
     <header class="page-header"><span class="page-title">Favoris</span><svg class="submenu-link" viewBox="0 0 7.234 31.32" @click="submenu()"><use xlink:href="#icon-submenu"></use></svg></header>
     <SubMenu v-show="submenuVisible"></SubMenu>
     <div class="page-content">
-      <MusicItem 
-      v-for="(music, index) in musics" 
-      v-bind:key="index" 
-      v-bind:data="music"></MusicItem>
+    <MusicItem 
+    v-for="(music, index) in musics" 
+    v-bind:key="index" 
+    v-bind:data="music"></MusicItem>
     </div>
   </div>
 </template>
