@@ -11,11 +11,10 @@
 </template>
 
 <script>
-
 export default {
   name: 'MusicItem',
-  props:{
-    data:Object,
+  props: {
+    data: Object
   }
 }
 </script>

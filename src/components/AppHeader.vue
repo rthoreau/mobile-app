@@ -21,10 +21,8 @@
 </template>
 
 <script>
-
 export default {
-  name: 'App_header',
-  
+  name: 'App_header'
 }
 </script>
 

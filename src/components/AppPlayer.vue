@@ -5,10 +5,8 @@
 </template>
 
 <script>
-
 export default {
-  name: 'App_player',
-  
+  name: 'App_player'
 }
 </script>
 

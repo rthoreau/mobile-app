@@ -9,9 +9,8 @@
 </template>
 
 <script>
-
 export default {
-  name: 'SubMenu',
+  name: 'SubMenu'
 }
 </script>
 
