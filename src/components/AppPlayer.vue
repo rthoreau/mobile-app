@@ -4,6 +4,7 @@
     <div class="overlay"></div>
     <button @click="nextVideo()" class="next">Next</button>
     <button @click="playVideo()" class="play">Pause</button>
+    <button @click="setTest('testvaleur')">{{this.$store.getters['manageStore/getTest']}}</button>
   </div>
 </template>
 
@@ -13,6 +14,7 @@
 import Vue from 'vue'
 import VueYouTubeEmbed from 'vue-youtube-embed'
 import { getIdFromURL, getTimeFromURL } from 'vue-youtube-embed'
+import {mapActions} from 'vuex'
 
 Vue.use(VueYouTubeEmbed)
 export default {
@@ -26,7 +28,7 @@ export default {
       paused:true
     }
   },
-  methods:{
+  methods:{ // pour ccomportement, computed = changement de valeur
     nextVideo(){
       this.videoId = getIdFromURL("https://www.youtube.com/watch?v=umjMGZw6vtw");
       function test(){
@@ -55,11 +57,17 @@ export default {
     playVideo(){
       this.player.playVideo();
       this.paused = false;
-    }
+    },
+    ...mapActions({
+      setTest: 'manageStore/setTest'
+    })
   },
   mounted(){
     this.videoId = getIdFromURL(this.url);
     this.startTime = getTimeFromURL(this.url);
+  },
+  watch:{
+    //if variable change, changer de video/mettre pause...
   }
 }
 </script>
