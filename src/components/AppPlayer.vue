@@ -3,24 +3,23 @@
     <div class="progress" :style="currentTimeValue"></div>
     <youtube :video-id="videoId" class="video" :players-vars="{start: 0, autoplay: 0, controls:0}" :player-width="320" :player-height="240" @ready="ready" @playing="playing" @buffering="buffering"></youtube>
     <div class="overlay"></div>
-      <button @click="playPause()" class="play">
-    <transition name="switch" mode="in-out">
-        <svg viewBox="0 0 31.908 35.381" v-if="paused" key="play"><use xlink:href="#icon-play"></use></svg>
-        <svg viewBox="0 0 31.909 35.383" v-if="!paused" key="pause"><use xlink:href="#icon-pause"></use></svg>
-    </transition>
-      </button>
+    <button @click="playPause()" class="play">
+      <transition name="switch" mode="in-out">
+          <svg viewBox="0 0 31.908 35.381" v-if="paused" key="play"><use xlink:href="#icon-play"></use></svg>
+          <svg viewBox="0 0 31.909 35.383" v-if="!paused" key="pause"><use xlink:href="#icon-pause"></use></svg>
+      </transition>
+    </button>
     <button @click="nextVideo()" class="next">Next</button>
+    <button @click="setTest('testvaleur')">{{this.$store.getters['manageStore/getTest']}}</button>
   </div>
 </template>
 
 <script>
-
-//faire la lsite des étapes de dev, différents mvp
-
 //https://github.com/kaorun343/vue-youtube-embed
 import Vue from 'vue'
 import VueYouTubeEmbed from 'vue-youtube-embed'
 import { getIdFromURL, getTimeFromURL } from 'vue-youtube-embed'
+import {mapActions} from 'vuex'
 
 Vue.use(VueYouTubeEmbed)
 export default {
@@ -68,11 +67,13 @@ export default {
       }
     },
     playVideo(){
-      //this.player.setPlaybackQuality('small');
       if (this.player){
         this.player.playVideo();
       }
     },
+    ...mapActions({
+      setTest: 'manageStore/setTest'
+    }),
     pauseVideo(){
       if (this.player){
         this.player.pauseVideo();
