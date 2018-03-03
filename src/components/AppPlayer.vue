@@ -15,9 +15,6 @@
 </template>
 
 <script>
-
-//faire la lsite des étapes de dev, différents mvp
-
 //https://github.com/kaorun343/vue-youtube-embed
 import Vue from 'vue'
 import VueYouTubeEmbed from 'vue-youtube-embed'
@@ -41,7 +38,7 @@ export default {
       progressInterval:'',
     }
   },
-  methods:{ // pour ccomportement, computed = changement de valeur
+  methods:{
     nextVideo(){
       this.player.loadVideoById(getIdFromURL("https://www.youtube.com/watch?v=umjMGZw6vtw"));
     },
@@ -70,7 +67,6 @@ export default {
       }
     },
     playVideo(){
-      //this.player.setPlaybackQuality('small');
       if (this.player){
         this.player.playVideo();
       }
