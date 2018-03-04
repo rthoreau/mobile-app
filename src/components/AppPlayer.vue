@@ -1,16 +1,31 @@
 <template>
   <div id="appPlayer">
     <div class="progress" :style="currentTimeValue"></div>
-    <youtube class="video" :players-vars="{start: 0, autoplay: 0, controls:0}" :player-width="320" :player-height="240" @ready="ready" @playing="playing" @buffering="buffering"></youtube>
-    <div class="overlay"></div>
+
+    <div class="music-plateform" v-bind:class="getCurrentMusic.plateform">
+      <PlateformIcon v-bind:plateform="getCurrentMusic.plateform"/>
+    </div>
+
+    <div class="video-container">
+      <transition name="appear">
+        <youtube class="video" :players-vars="{start: 0, autoplay: 0, controls:0}" :player-width="320" :player-height="240" @ready="ready" @playing="playing" @buffering="buffering" @ended="ended" v-show="player && refresh"></youtube>
+      </transition>
+      <transition name="appear">
+        <img v-bind:src="getCurrentMusic.thumbnail" alt="" class="video" v-if="player && refresh">
+      </transition>
+      <div class="overlay"></div>
+    </div>
+
     <button @click="playPause()" class="play">
       <transition name="switch" mode="in-out">
           <svg viewBox="0 0 31.908 35.381" v-if="paused" key="play"><use xlink:href="#icon-play"></use></svg>
           <svg viewBox="0 0 31.909 35.383" v-if="!paused" key="pause"><use xlink:href="#icon-pause"></use></svg>
       </transition>
     </button>
+
     <button @click="nextVideo()" class="next">Next</button>
-    <button @click="watchLike">Instead of watch</button>
+    <button @click="test()" class="next">test</button>
+    <span>{{hmsDuration(currentTime)}} / {{hmsDuration(duration)}}</span>
   </div>
 </template>
 
@@ -18,13 +33,17 @@
 
 //https://github.com/kaorun343/vue-youtube-embed
 import Vue from 'vue'
+import PlateformIcon from './components/PlateformIcon'
 import VueYouTubeEmbed from 'vue-youtube-embed'
 import { getIdFromURL/*, getTimeFromURL */} from 'vue-youtube-embed'
-//import {mapActions} from 'vuex'
+import {mapGetters, mapActions} from 'vuex'
 
 Vue.use(VueYouTubeEmbed)
 export default {
   name: 'App_player',
+  components: {
+    PlateformIcon
+  },
   data(){
     return{
       currentMusic:this.$store.state.manageStore.currentMusic,
@@ -37,16 +56,20 @@ export default {
       duration:0,
       currentTimeValue:'',
       currentTimeInterval: '',
-      progressInterval:''
+      progressInterval:'',
+      refresh:true
     }
   },
   methods:{
+    ...mapActions({
+      setCurrentMusic: 'manageStore/setCurrentMusic'
+    }),
     nextVideo(){
-      this.player.loadVideoById(getIdFromURL("https://www.youtube.com/watch?v=umjMGZw6vtw"));
+      this.setCurrentMusic({url: 'https://www.youtube.com/watch?v=umjMGZw6vtw', title: 'Yann Tiersen - "La valse de Monstres" (full Album)', author: 'srtanada08', date: '2013-08-18', duration: '2642', thumbnail: 'http://www.kaltblut-magazine.com/wp-content/uploads/2014/08/yann-tiersen-4df4cdfab01e1-720x385.jpg', plateform: 'yt'});
     },
     ready(player){
       this.player = player;
-      this.player.loadVideoById(this.videoId);
+      this.loadVideoById(this.videoId);
     },
     playing () {
       this.watchTime();
@@ -54,11 +77,15 @@ export default {
         this.paused = false;
       }
     },
+    ended(){
+      this.nextVideo();
+    },
     buffering(){
       console.log('buffering');
       if (this.paused){
         this.playVideo();
       }
+      this.setProgressByGet();
     },
     playPause () {
       if (this.paused){
@@ -70,29 +97,29 @@ export default {
       }
     },
     playVideo(){
-      //this.player.setPlaybackQuality('small');
       if (this.player){
         this.player.playVideo();
+        console.log(this.player);
       }
     },
-    /*...mapActions({
-      setCurrentMusic: 'manageStore/setCurrentMusic'
-    }),*/
     pauseVideo(){
       if (this.player){
         this.player.pauseVideo();
         this.watchTime(false);
       }
     },
-    watchTime(active){
-      active = active === false ? false : true;
-      if (this.currentTime === 0){
+    loadVideoById(id){
+      if (this.player){
+        this.player.loadVideoById(id);
         this.setProgressByGet();
       }
+    },
+    watchTime(active){
+      active = active === false ? false : true;
       if (active){
-        if (!this.currentTimeInterval){
+        if (!this.progressInterval){
           this.progressInterval = window.setInterval(this.setProgress, 500);
-          this.currentTimeInterval = window.setInterval(this.setProgressByGet, 2500);
+          this.currentTimeInterval = window.setInterval(this.setProgressByGet, 5000);
         }
       }else{
         window.clearInterval(this.currentTimeInterval);
@@ -109,32 +136,39 @@ export default {
       }
     },
     setProgressByGet(){
-      this.currentTime = this.player.getCurrentTime();
-      if (this.currentTime && this.currentTime >= this.duration){
-        this.nextVideo();
-        this.currentTime = 0;
+      if (this.player){
+        var time = this.player.getCurrentTime();
+        if (time){
+          this.currentTime = time;
+        }
       }
     },
-    watchLike(){
-      this.currentMusic = this.$store.getters['manageStore/getCurrentMusic'];
-      console.log(this.currentMusic);
-      console.log('not watched music change');
+    hmsDuration(val){
+      var h = Math.floor(val/3600);
+      var m = Math.floor(val%3600/60);
+      m = m >= 10 ? m : '0' + m;
+      var s = Math.floor(val%3600%60);
+      s = s >= 10 ? s : '0' + s;
+      return h+':'+m+':'+s;
+    },
+    test(){
+      this.player.seekTo(220);
     }
   },
   mounted(){
     this.videoId = getIdFromURL(this.currentMusic.url);
     this.duration = this.currentMusic.duration;
-    /*this.$store.watch(
-      (state) => state.getters['manageStore/getCurrentMusic']
-      , val => {
-        console.log(val);
-      }
-    )*/
+  },
+  computed:{
+     ...mapGetters({
+      getCurrentMusic: 'manageStore/getCurrentMusic'
+    }),
   },
   //TODO
   // detect onPause (modif this.paused)
   // set quality to low/small
   //Transform submenu from main menu
+  //hide thumbnail
   watch: {
     player: function (val) {
       if (val){
@@ -148,16 +182,18 @@ export default {
       }
       this.currentTimeValue = "width:" + time + "%";
     },
-    currentMusic: function(music){
-      console.log('music changed');
+    getCurrentMusic: function(music){
       this.videoId = getIdFromURL(music.url);
       this.duration = music.duration;
+      this.currentTime = 0;
+      this.refresh = false;
+      this.$nextTick(function () {
+        this.refresh = true;
+      })
     },
     videoId: function(id){
-      console.log('id changed');
-      if (this.player){
-        this.player.loadVideoById(id);
-      }
+      this.loadVideoById(id);
+      this.setProgressByGet();
     }
   }
 }
@@ -170,7 +206,7 @@ export default {
   height:3.85em;
   width:100%;
   background-color:#215292;
-  padding:0.5rem 0.8rem;
+  padding:0.5rem 4%;
   text-align:left;
 }
 .progress{
@@ -181,11 +217,27 @@ export default {
   background-color:white;
   transition:width 0.5s linear;
 }
-.video{
+#appPlayer .music-plateform{
+  top:0.5rem;
+  height:2.85rem;
+  position:static;
   display:inline-block;
+}
+.video-container{
+  height:2.85rem;
+  position:absolute;
   width:3.5rem;
   margin-left:0.5rem;
+  top:0.5rem;
+  left:4%;
+}
+.video{
+  position:absolute;
+  display:inline-block;
   height:100%;
+  width:100%;
+  right:0;
+  top:0;
 }
 .overlay{
   position:absolute;

@@ -1,6 +1,8 @@
 <template>
   <div class="music-item" @click="setCurrentMusic(data)">
-    <div class="music-plateform" v-bind:class="data.plateform"></div>
+    <div class="music-plateform" v-bind:class="data.plateform">
+      <PlateformIcon v-bind:plateform="data.plateform"/>
+    </div>
     <div class="music-thumbnail-container">
       <transition name="appear">
         <img v-bind:src="data.thumbnail" alt="" class="music-thumbnail" v-if="loaded">
@@ -16,11 +18,15 @@
 
 <script>
 import {mapActions} from 'vuex'
+import PlateformIcon from './PlateformIcon'
 
 export default {
   name: 'MusicItem',
   props:{
     data:Object,
+  },
+  components: {
+    PlateformIcon
   },
   data(){
     return{
@@ -53,6 +59,7 @@ export default {
   top:0;
   z-index:0;
   width:4rem;
+  transition:background-color 0.5s;
 }
 .music-thumbnail-container{
   position:relative;
@@ -72,11 +79,11 @@ export default {
 }
 .appear-enter-active,
 .appear-leave-active{
-  transition: all 0.8s;
+  transition: all 1.2s;
 }
 .appear-enter,
 .appear-leave-to{
-  width:0%;
+  width:0%!important;
 }
 .music-content{
   display:inline-block;
