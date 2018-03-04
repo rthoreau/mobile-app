@@ -1,7 +1,7 @@
 <template>
   <div id="appPlayer">
     <div class="progress" :style="currentTimeValue"></div>
-    <youtube :video-id="videoId" class="video" :players-vars="{start: 0, autoplay: 0, controls:0}" :player-width="320" :player-height="240" @ready="ready" @playing="playing" @buffering="buffering"></youtube>
+    <youtube class="video" :players-vars="{start: 0, autoplay: 0, controls:0}" :player-width="320" :player-height="240" @ready="ready" @playing="playing" @buffering="buffering"></youtube>
     <div class="overlay"></div>
     <button @click="playPause()" class="play">
       <transition name="switch" mode="in-out">
@@ -10,32 +10,34 @@
       </transition>
     </button>
     <button @click="nextVideo()" class="next">Next</button>
-    <button @click="setTest('testvaleur')">{{this.$store.getters['manageStore/getTest']}}</button>
+    <button @click="watchLike">Instead of watch</button>
   </div>
 </template>
 
 <script>
+
 //https://github.com/kaorun343/vue-youtube-embed
 import Vue from 'vue'
 import VueYouTubeEmbed from 'vue-youtube-embed'
-import { getIdFromURL, getTimeFromURL } from 'vue-youtube-embed'
-import {mapActions} from 'vuex'
+import { getIdFromURL/*, getTimeFromURL */} from 'vue-youtube-embed'
+//import {mapActions} from 'vuex'
 
 Vue.use(VueYouTubeEmbed)
 export default {
   name: 'App_player',
   data(){
     return{
-      url:"https://www.youtube.com/watch?v=pliDsyfUXcg",
+      currentMusic:this.$store.state.manageStore.currentMusic,
+      url:'',
       videoId: '',
       startTime: 15,
       player: '',
       paused:true,
       currentTime:0,
-      duration:50,
+      duration:0,
       currentTimeValue:'',
       currentTimeInterval: '',
-      progressInterval:'',
+      progressInterval:''
     }
   },
   methods:{
@@ -44,6 +46,7 @@ export default {
     },
     ready(player){
       this.player = player;
+      this.player.loadVideoById(this.videoId);
     },
     playing () {
       this.watchTime();
@@ -67,13 +70,14 @@ export default {
       }
     },
     playVideo(){
+      //this.player.setPlaybackQuality('small');
       if (this.player){
         this.player.playVideo();
       }
     },
-    ...mapActions({
-      setTest: 'manageStore/setTest'
-    }),
+    /*...mapActions({
+      setCurrentMusic: 'manageStore/setCurrentMusic'
+    }),*/
     pauseVideo(){
       if (this.player){
         this.player.pauseVideo();
@@ -82,6 +86,9 @@ export default {
     },
     watchTime(active){
       active = active === false ? false : true;
+      if (this.currentTime === 0){
+        this.setProgressByGet();
+      }
       if (active){
         if (!this.currentTimeInterval){
           this.progressInterval = window.setInterval(this.setProgress, 500);
@@ -107,11 +114,22 @@ export default {
         this.nextVideo();
         this.currentTime = 0;
       }
+    },
+    watchLike(){
+      this.currentMusic = this.$store.getters['manageStore/getCurrentMusic'];
+      console.log(this.currentMusic);
+      console.log('not watched music change');
     }
   },
   mounted(){
-    this.videoId = getIdFromURL(this.url);
-    this.startTime = getTimeFromURL(this.url);
+    this.videoId = getIdFromURL(this.currentMusic.url);
+    this.duration = this.currentMusic.duration;
+    /*this.$store.watch(
+      (state) => state.getters['manageStore/getCurrentMusic']
+      , val => {
+        console.log(val);
+      }
+    )*/
   },
   //TODO
   // detect onPause (modif this.paused)
@@ -129,6 +147,17 @@ export default {
         time = 100;
       }
       this.currentTimeValue = "width:" + time + "%";
+    },
+    currentMusic: function(music){
+      console.log('music changed');
+      this.videoId = getIdFromURL(music.url);
+      this.duration = music.duration;
+    },
+    videoId: function(id){
+      console.log('id changed');
+      if (this.player){
+        this.player.loadVideoById(id);
+      }
     }
   }
 }

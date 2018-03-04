@@ -1,21 +1,21 @@
 const state = {
-  test: 'coucou'
+  currentMusic: {url: 'https://www.youtube.com/watch?v=mEBrRSa7BaM', title: 'Klangnomad - Promo 2013', author: 'Klangnomad Music', date: '2013-08-09', duration: '2916', thumbnail: 'https://i9.ytimg.com/sb/mEBrRSa7BaM/storyboard3_L2/M2.jpg', plateform: 'yt'}
 }
 
 const getters = {
-  getTest: function (state) { return state.test }
+  getCurrentMusic: state => state.currentMusic
 }
 
 const mutations = {
-  mutateTest: (state, test) => {
-    state.test = test
+  mutateCurrentMusic: (state, currentMusic) => {
+    state.currentMusic = currentMusic;
   }
 }
 
 const actions = {
-  setTest (context, test) {
-    console.log(test)
-    context.commit('mutateTest', test)
+  setCurrentMusic (context, currentMusic) {
+    context.commit('mutateCurrentMusic', currentMusic)
+    console.log(currentMusic);
   }
 }
 

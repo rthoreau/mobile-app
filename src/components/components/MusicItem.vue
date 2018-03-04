@@ -1,5 +1,5 @@
 <template>
-  <div class="music-item">
+  <div class="music-item" @click="setCurrentMusic(data)">
     <div class="music-plateform" v-bind:class="data.plateform"></div>
     <div class="music-thumbnail-container">
       <transition name="appear">
@@ -15,6 +15,8 @@
 </template>
 
 <script>
+import {mapActions} from 'vuex'
+
 export default {
   name: 'MusicItem',
   props:{
@@ -24,6 +26,11 @@ export default {
     return{
       loaded:false,
     }
+  },
+  methods:{
+    ...mapActions({
+      setCurrentMusic: 'manageStore/setCurrentMusic'
+    }),
   },
   mounted() {
     setTimeout(() => {
