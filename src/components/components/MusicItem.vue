@@ -52,15 +52,6 @@ export default {
   font-size:0;
   margin-bottom:1rem;
 }
-.music-plateform{
-  position:absolute;
-  height:3.5rem;
-  left:0;
-  top:0;
-  z-index:0;
-  width:4rem;
-  transition:background-color 0.5s;
-}
 .music-thumbnail-container{
   position:relative;
   width:3.5rem;
@@ -76,14 +67,6 @@ export default {
   display:inline-block;
   background-color:#545436;
   object-fit:cover;
-}
-.appear-enter-active,
-.appear-leave-active{
-  transition: all 1.2s;
-}
-.appear-enter,
-.appear-leave-to{
-  width:0%!important;
 }
 .music-content{
   display:inline-block;

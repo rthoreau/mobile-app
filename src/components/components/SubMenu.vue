@@ -1,16 +1,28 @@
 <template>
   <div class="submenu">
     <ul>
-      <li>Do something</li>
-      <li>Do nothing</li>
-      <li>Delete all the internet</li>
+      <li v-if="links" v-for="(link, index) in links" 
+        v-bind:key="index"><a @click="link.action">{{link.text}}</a></li>
     </ul>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'SubMenu'
+  name: 'SubMenu',
+  props:{
+    links:Array,
+  },
+  data(){
+    return{
+      //submenuVisible: false,
+    }
+  },
+  /*methods: {
+    submenu () {
+      this.submenuVisible = !this.submenuVisible
+    }
+  }*/
 }
 </script>
 
@@ -30,5 +42,6 @@ export default {
 }
 .submenu li{
   padding:0.3rem;
+  font-size:1rem;
 }
 </style>

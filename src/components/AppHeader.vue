@@ -1,6 +1,6 @@
 <template>
   <header id="appHeader">
-    <ul>
+    <ul class="nav">
       <li><router-link to="/">
         <svg viewBox="0 0 37.779 35.262"><use xlink:href="#icon-home"></use></svg>
       </router-link></li>
@@ -13,16 +13,27 @@
       <li><router-link to="/Search">
         <svg viewBox="0 0 29.648 34.728"><use xlink:href="#icon-search"></use></svg>
       </router-link></li>
-      <li><router-link to="/Submenu">
+      <li><a @click="submenuVisible = !submenuVisible">
         <svg viewBox="0 0 7.234 31.32"><use xlink:href="#icon-submenu"></use></svg>
-      </router-link></li>
+      </a></li>
     </ul>
+    <SubMenu v-if="submenuVisible" v-bind:links="links"></SubMenu>
   </header>
 </template>
 
 <script>
+import SubMenu from './components/SubMenu'
 export default {
-  name: 'App_header'
+  name: 'App_header',
+  components: {
+    SubMenu
+  },
+  data(){
+    return{
+      submenuVisible: false,
+      links:[{action:'', text:'Soon more features here'}]
+    }
+  },
 }
 </script>
 
@@ -35,30 +46,30 @@ export default {
     background-color:#4b89dc;
     z-index:100;
   }
-  #appHeader ul{
+  #appHeader .nav{
     list-style-type:none;
     margin:0;
     padding:0.25rem 8% 0.25rem 4%;
     height:100%;
     font-size:0;
   }
-  #appHeader li{
+  #appHeader .nav li{
     display:inline-block;
     width:23%;
     height:100%;
     text-align:center;
   }
-  #appHeader li:last-child{
+  #appHeader .nav li:last-child{
     display:inline-block;
     width:8%;
   }
-  #appHeader a{
+  #appHeader .nav a{
     position:relative;
     display:inline-block;
     padding:1rem;
     height:100%;
   }
-  #appHeader a:after{
+  #appHeader .nav a:after{
     position:absolute;
     left:50%;
     bottom:0;
@@ -69,7 +80,7 @@ export default {
     background-color:#215292;
     transition:width 0.5s;
   }
-  #appHeader a.router-link-exact-active:after{
+  #appHeader .nav a.router-link-exact-active:after{
     width:100%;
   }
   #appHeader svg{
@@ -77,7 +88,10 @@ export default {
     height:100%;
     transition:fill 0.5s;
   }
-  #appHeader a.router-link-exact-active svg{
+  #appHeader .nav a.router-link-exact-active svg{
     fill:#215292;
+  }
+  #appHeader .submenu{
+    top:4rem;
   }
 </style>

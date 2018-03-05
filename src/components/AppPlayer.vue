@@ -152,7 +152,7 @@ export default {
       return h+':'+m+':'+s;
     },
     test(){
-      this.player.seekTo(220);
+      this.player.seekTo(this.currentTime + 50);
     }
   },
   mounted(){
@@ -167,8 +167,8 @@ export default {
   //TODO
   // detect onPause (modif this.paused)
   // set quality to low/small
-  //Transform submenu from main menu
-  //hide thumbnail
+  // submenu headbox
+  // animation hide thumbnail
   watch: {
     player: function (val) {
       if (val){
