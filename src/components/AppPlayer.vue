@@ -145,11 +145,12 @@ export default {
     },
     hmsDuration(val){
       var h = Math.floor(val/3600);
+      h = h == 0 ? '' : h + ':';
       var m = Math.floor(val%3600/60);
       m = m >= 10 ? m : '0' + m;
       var s = Math.floor(val%3600%60);
       s = s >= 10 ? s : '0' + s;
-      return h+':'+m+':'+s;
+      return h+m+':'+s;
     },
     test(){
       this.player.seekTo(this.currentTime + 50);

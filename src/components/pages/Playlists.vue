@@ -1,0 +1,28 @@
+<template>
+  <div id="playlist">
+    <header class="page-header">
+      <span class="page-title">Playlists</span>
+      <router-link v-bind:to="nextIdLink">
+        <svg class="submenu-link" viewBox="0 0 34.471 34.471"><use xlink:href="#icon-plus"></use></svg>
+      </router-link>
+    </header>
+    <div class="page-content">
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'Playlists',
+  components: {
+  },
+  data () {
+    return {
+      nextIdLink:"/Playlist/" + 2 + "/edit"
+    }
+  }
+}
+</script>
+
+<style>
+</style>

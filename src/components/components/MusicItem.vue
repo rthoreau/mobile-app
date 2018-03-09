@@ -11,7 +11,7 @@
     <div class="music-content">
       <span class="music-title">{{data.title}}</span>
       <span class="music-author">{{data.author}}</span>
-      <span class="music-duration">{{data.duration}}</span>
+      <span class="music-duration">{{hmsDuration(data.duration)}}</span>
     </div>
   </div>
 </template>
@@ -37,6 +37,15 @@ export default {
     ...mapActions({
       setCurrentMusic: 'manageStore/setCurrentMusic'
     }),
+    hmsDuration(val){
+      var h = Math.floor(val/3600);
+      h = h == 0 ? '' : h + ':';
+      var m = Math.floor(val%3600/60);
+      m = m >= 10 ? m : '0' + m;
+      var s = Math.floor(val%3600%60);
+      s = s >= 10 ? s : '0' + s;
+      return h+m+':'+s;
+    }
   },
   mounted() {
     setTimeout(() => {

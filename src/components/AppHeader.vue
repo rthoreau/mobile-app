@@ -4,7 +4,7 @@
       <li><router-link to="/">
         <svg viewBox="0 0 37.779 35.262"><use xlink:href="#icon-home"></use></svg>
       </router-link></li>
-      <li><router-link to="/Playlist">
+      <li><router-link to="/Playlists">
         <svg viewBox="0 0 38.394 35.2"><use xlink:href="#icon-playlist"></use></svg>
       </router-link></li>
       <li><router-link to="/Favorite">

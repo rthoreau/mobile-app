@@ -95,7 +95,7 @@
 import AppHeader from './components/AppHeader.vue'
 import AppPlayer from './components/AppPlayer.vue'
 
-export default {
+export default {//html webpack plugin minify html false
   name: 'app',
   components: {
     AppHeader,
