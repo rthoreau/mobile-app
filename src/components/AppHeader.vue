@@ -83,7 +83,7 @@ export default {
   #appHeader .nav a.router-link-exact-active:after{
     width:100%;
   }
-  #appHeader svg{
+  svg{
     fill:white;
     height:100%;
     transition:fill 0.5s;

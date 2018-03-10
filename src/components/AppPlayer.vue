@@ -46,7 +46,7 @@ export default {
   },
   data(){
     return{
-      currentMusic:this.$store.state.manageStore.currentMusic,
+      currentMusic:this.$store.getters['manageStore/getCurrentMusic'],
       url:'',
       videoId: '',
       startTime: 15,
@@ -65,7 +65,7 @@ export default {
       setCurrentMusic: 'manageStore/setCurrentMusic'
     }),
     nextVideo(){
-      this.setCurrentMusic({url: 'https://www.youtube.com/watch?v=umjMGZw6vtw', title: 'Yann Tiersen - "La valse de Monstres" (full Album)', author: 'srtanada08', date: '2013-08-18', duration: '2642', thumbnail: 'http://www.kaltblut-magazine.com/wp-content/uploads/2014/08/yann-tiersen-4df4cdfab01e1-720x385.jpg', plateform: 'yt'});
+      this.setCurrentMusic('ert5784ert');
     },
     ready(player){
       this.player = player;
@@ -110,7 +110,8 @@ export default {
     },
     loadVideoById(id){
       if (this.player){
-        this.player.loadVideoById(id);
+        console.log(id);
+        //this.player.loadVideoById(id);
         this.setProgressByGet();
       }
     },
@@ -173,7 +174,7 @@ export default {
   watch: {
     player: function (val) {
       if (val){
-        this.player.playVideo();
+        this.playVideo();
       }
     },
     currentTime: function(time){
@@ -206,7 +207,7 @@ export default {
   bottom:0;
   height:3.85em;
   width:100%;
-  background-color:#215292;
+  background-color:#4b89dc;
   padding:0.5rem 4%;
   text-align:left;
 }
@@ -223,6 +224,7 @@ export default {
   height:2.85rem;
   position:static;
   display:inline-block;
+  margin-right:0.5rem;
 }
 .video-container{
   height:2.85rem;
@@ -251,14 +253,14 @@ export default {
   width:100%!important;
   height:100%!important;
 }
-.play{
+#appPlayer button{
   position:relative;
   display:inline-block;
   vertical-align:top;
   height:100%;
-  width:3.5rem;
+  width:2rem;
 }
-.play svg{
+#appPlayer button svg{
   position:absolute;
   height:60%;
   left:50%;

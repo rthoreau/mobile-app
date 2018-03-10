@@ -1,17 +1,17 @@
 <template>
-  <div class="music-item" @click="setCurrentMusic(data)">
-    <div class="music-plateform" v-bind:class="data.plateform">
-      <PlateformIcon v-bind:plateform="data.plateform"/>
+  <div class="music-item" @click="setCurrentMusic(uid)">
+    <div class="music-plateform" v-bind:class="music.plateform">
+      <PlateformIcon v-bind:plateform="music.plateform"/>
     </div>
     <div class="music-thumbnail-container">
       <transition name="appear">
-        <img v-bind:src="data.thumbnail" alt="" class="music-thumbnail" v-if="loaded">
+        <img v-bind:src="music.thumbnail" alt="" class="music-thumbnail" v-if="loaded">
       </transition>
     </div>
     <div class="music-content">
-      <span class="music-title">{{data.title}}</span>
-      <span class="music-author">{{data.author}}</span>
-      <span class="music-duration">{{hmsDuration(data.duration)}}</span>
+      <span class="music-title">{{music.title}}</span>
+      <span class="music-author">{{music.author}}</span>
+      <span class="music-duration">{{hmsDuration(music.duration)}}</span>
     </div>
   </div>
 </template>
@@ -23,7 +23,7 @@ import PlateformIcon from './PlateformIcon'
 export default {
   name: 'MusicItem',
   props:{
-    data:Object,
+    uid:String
   },
   components: {
     PlateformIcon
@@ -31,6 +31,7 @@ export default {
   data(){
     return{
       loaded:false,
+      music:this.$store.getters['manageStore/getMusics'][this.uid]
     }
   },
   methods:{

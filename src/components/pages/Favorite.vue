@@ -3,10 +3,10 @@
     <header class="page-header"><span class="page-title">Favoris</span><svg class="submenu-link" viewBox="0 0 7.234 31.32" @click="submenuVisible = !submenuVisible"><use xlink:href="#icon-submenu"></use></svg></header>
     <SubMenu v-if="submenuVisible" v-bind:links="links"></SubMenu>
     <div class="page-content">
-    <MusicItem 
-    v-for="(music, index) in musics" 
-    v-bind:key="index" 
-    v-bind:data="music"></MusicItem>
+      <MusicItem 
+      v-for="(uid, index) in musics" 
+      v-bind:key="index" 
+      v-bind:uid="index"></MusicItem>
     </div>
   </div>
 </template>
@@ -29,7 +29,7 @@ export default {
       {action:() =>  alert('Something went wrong ! Try again later !'), text:'Delete all the internet'}],
       musics: this.$store.getters['manageStore/getMusics']
     }
-  },
+  }
 }
 </script>
 

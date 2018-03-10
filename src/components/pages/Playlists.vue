@@ -7,19 +7,29 @@
       </router-link>
     </header>
     <div class="page-content">
+      <PlaylistItem 
+      v-for="(data, index) in playlists" 
+      v-bind:key="index" 
+      v-bind:id="index"></PlaylistItem>
     </div>
   </div>
 </template>
 
 <script>
+import PlaylistItem from '../components/PlaylistItem'
 export default {
   name: 'Playlists',
   components: {
+    PlaylistItem
   },
   data () {
     return {
-      nextIdLink:"/Playlist/" + 2 + "/edit"
+      playlists: this.$store.getters['manageStore/getPlaylists'],
+      nextIdLink:'',
     }
+  },
+  mounted(){
+    this.nextIdLink = "/Playlist/" + (parseInt(Object.keys(this.playlists).pop()) + 1) + "/edit";
   }
 }
 </script>
