@@ -3,9 +3,11 @@
     <header class="page-header">
       <button @click="$router.go(-1)"><svg viewBox="0 0 23.622 34.425"><use xlink:href="#icon-back"></use></svg></button>
       <input type="text" class="page-title edit" v-if="mode === 'edit'" placeholder="Party, Pop, Sleep..." v-model="playlist.name"/>
+      <span class="page-title" v-if="mode !== 'edit'">{{playlist.name}}</span>
+      <svg class="submenu-link" viewBox="0 0 7.234 31.32" @click="submenuVisible = !submenuVisible"><use xlink:href="#icon-submenu"></use></svg>
     </header>
+    <SubMenu v-if="submenuVisible" v-bind:links="links"></SubMenu>
     <div class="page-content">
-      <button @click="test()">test</button>
       <MusicItem 
       v-for="(uid, index) in playlist.musics" 
       v-bind:key="index" 
@@ -27,14 +29,26 @@ export default {
   data () {
     return {
       id:this.$route.params.id,
-      mode:this.$route.params.mode,
-      playlist:{name:'', musics:[]}
+      mode:this.$route.params.mode || '',
+      playlist:{name:'', musics:[]},
+      submenuVisible:false,
+      links:''
     }
   },
   methods:{
     ...mapActions({
       setPlaylists: 'manageStore/setPlaylists'
-    })
+    }),
+    deletePlaylist(){
+
+    },
+    changeMode(){
+      this.mode = this.mode === 'edit' ? '' : 'edit';
+      this.links = [
+        {text:this.mode !== 'edit' ? 'Modifier la playlist' : 'Terminer la modification', action: () => this.changeMode()},
+        {text:'Supprimer la playlist', action: () => this.deletePlaylist()}
+      ];
+    }
   },
   computed:{
      ...mapGetters({
@@ -42,6 +56,10 @@ export default {
     }),
   },
   mounted(){
+    this.links = [
+      {text:this.mode !== 'edit' ? 'Modifier la playlist' : 'Terminer la modification', action: () => this.changeMode()},
+      {text:'Supprimer la playlist', action: () => this.deletePlaylist()}
+    ];
     if(this.$store.getters['manageStore/getPlaylists'][this.id] === undefined){
       var playlists = this.$store.getters['manageStore/getPlaylists'];
       playlists[this.id] = {name:'', musics:[]};

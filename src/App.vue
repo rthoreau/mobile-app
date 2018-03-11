@@ -208,7 +208,10 @@ ul{
   padding:0;
   margin:0;
 }
-
+a{
+  text-decoration:none;
+  color:inherit;
+}
 .music-plateform{
   position:absolute;
   height:3.5rem;

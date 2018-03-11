@@ -2,7 +2,10 @@
   <div class="submenu">
     <ul>
       <li v-if="links" v-for="(link, index) in links" 
-        v-bind:key="index"><a @click="link.action">{{link.text}}</a></li>
+        v-bind:key="index">
+        <a @click="link.action" v-if="link.mode !== 'router'">{{link.text}}</a>
+        <router-link v-if="link.mode === 'router'" v-bind:to="link.action">{{link.text}}</router-link>
+        </li>
     </ul>
   </div>
 </template>
