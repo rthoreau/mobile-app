@@ -26,6 +26,9 @@ export default {
       this.submenuVisible = !this.submenuVisible
     }
   }*/
+  mounted(){
+    console.log(this.$el);
+  }
 }
 </script>
 
