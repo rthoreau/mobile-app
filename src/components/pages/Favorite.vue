@@ -8,23 +8,18 @@
       v-bind:key="index" 
       v-bind:uid="index"></MusicItem>
     </div>
-    <Popup>
-      ekghrelrglo
-    </Popup>
   </div>
 </template>
 
 <script>
 import MusicItem from '../components/MusicItem'
 import SubMenu from '../components/SubMenu'
-import Popup from '../components/Popup'
 
 export default {
   name: 'Favorite',
   components: {
     MusicItem,
-    SubMenu,
-    Popup
+    SubMenu
   },
   data () {
     return {

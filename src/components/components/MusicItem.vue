@@ -1,24 +1,35 @@
 <template>
-  <div class="music-item" @click="setCurrentMusic(uid)">
-    <div class="music-plateform" v-bind:class="music.plateform">
+  <div class="music-item item">
+    <div class="music-plateform" v-bind:class="music.plateform" @click="setCurrentMusic(uid)">
       <PlateformIcon v-bind:plateform="music.plateform"/>
     </div>
-    <div class="music-thumbnail-container">
+    <div class="music-thumbnail-container" @click="setCurrentMusic(uid)">
       <transition name="appear">
         <img v-bind:src="music.thumbnail" alt="" class="music-thumbnail" v-if="loaded">
       </transition>
     </div>
-    <div class="music-content">
+    <div class="music-content" @click="setCurrentMusic(uid)">
       <span class="music-title">{{music.title}}</span>
       <span class="music-author">{{music.author}}</span>
       <span class="music-duration">{{hmsDuration(music.duration)}}</span>
     </div>
+    <svg class="submenu-link" viewBox="0 0 7.234 31.32" @click="submenuVisible = !submenuVisible"><use xlink:href="#icon-submenu"></use></svg>
+    <SubMenu v-if="submenuVisible" v-bind:links="links"></SubMenu>
+    <Popup v-if="popupVisible" v-bind:params="popupParams">
+      <ul>
+        <li v-for="(playlist, index) in playlists" v-bind:key="index">
+          <label><input type="checkbox"> {{playlist.name}}</label>
+        </li>
+      </ul>
+    </Popup>
   </div>
 </template>
 
 <script>
 import {mapActions} from 'vuex'
 import PlateformIcon from './PlateformIcon'
+import SubMenu from './SubMenu'
+import Popup from '../components/Popup'
 
 export default {
   name: 'MusicItem',
@@ -26,12 +37,27 @@ export default {
     uid:String
   },
   components: {
-    PlateformIcon
+    PlateformIcon,
+    SubMenu,
+    Popup
   },
   data(){
     return{
       loaded:false,
-      music:this.$store.getters['manageStore/getMusics'][this.uid]
+      playlists:this.$store.getters['manageStore/getPlaylists'],
+      music:this.$store.getters['manageStore/getMusics'][this.uid],
+      submenuVisible:false,
+      links:[
+        {text:'Ajouter à la file', action:() => console.log('TODO')},
+        {text:'Ajouter à une playlist', action: () => this.popupVisible = true},
+        {text:'Supprimer de mes favoris', action: () => console.log('TODO')}
+      ],
+      popupVisible:false,
+      popupParams:{
+        title:'Ajouter la musique dans...',
+        okAction:() => console.log('TODO'), 
+        cancelAction:() => this.popupVisible = false
+      }
     }
   },
   methods:{
@@ -70,6 +96,7 @@ export default {
   object-fit:cover;
   margin:0 0.8rem 0 0.5rem;
   text-align:right;
+  vertical-align: middle;
 }
 .music-thumbnail{
   width:100%;
@@ -81,8 +108,9 @@ export default {
 .music-content{
   display:inline-block;
   text-align:left;
-  width:80%;
-  width:calc(100% - 4.8rem);
+  width:76%;
+  vertical-align: middle;
+  width:calc(98% - 4.8rem);
   font-size:1rem;
   vertical-align: top;
 }
@@ -91,5 +119,8 @@ export default {
 }
 .music-title{
   font-weight:bold;
+}
+.music-item .submenu-link{
+
 }
 </style>

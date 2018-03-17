@@ -122,7 +122,7 @@ html, body{
 body{
   background-color:#18222d;
   margin:0;
-  font-family:  Arial, sans-serif;
+  font-family:  Arial, sans-serif!important;
   text-align: center;
   color: #7c9bbb;
 }
@@ -147,6 +147,8 @@ body{
   box-sizing:border-box;
   box-shadow:inset -5px 8px 15px -10px black;
   z-index:100;
+  text-align:left;
+  padding-left:2.4rem;
 }
 .page-content{
   display:inline-block;
@@ -163,6 +165,7 @@ body{
   font-size:1.8rem;
   line-height:4rem;
   color:white;
+  vertical-align: middle;
 }
 .page-header .submenu-link{
   position:absolute;
@@ -229,5 +232,18 @@ a{
 .appear-enter,
 .appear-leave-to{
   width:0%!important;
+}
+
+/* items */
+.item .submenu-link{
+  height:1rem;
+  vertical-align: middle;
+  width:2%;
+  text-align:center;
+}
+.item .submenu{
+  position:absolute;
+  top:0;
+  right:1rem;
 }
 </style>

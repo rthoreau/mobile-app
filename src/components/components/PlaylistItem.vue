@@ -1,5 +1,5 @@
 <template>
-  <div class="playlist-item">
+  <div class="playlist-item item">
     <div class="playlist-content">
       <span class="playlist-name">{{playlist.name}}</span>
       <ul class="playlist-music-list">
@@ -70,16 +70,5 @@ export default {
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis;
-}
-.playlist-item .submenu-link{
-  height:1rem;
-  vertical-align: middle;
-  width:2%;
-  text-align:center;
-}
-.playlist-item .submenu{
-  position:absolute;
-  top:0;
-  right:1rem;
 }
 </style>

@@ -1,16 +1,42 @@
 <template>
   <div class="popup-overlay">
     <div class="popup">
+      <header v-if="defaultParams.title !== ''">
+        <span class="title">{{defaultParams.title}}</span>
+      </header>
+      <div class="container">
         <slot/>
-        <button>Ok</button>
-        <button>Annuler</button>
+      </div>
+      <footer>
+        <button @click="defaultParams.okAction">{{defaultParams.okText}}</button>
+        <button @click="defaultParams.cancelAction">{{defaultParams.cancelText}}</button>
+      </footer>
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'SubMenu'
+  name: 'SubMenu',
+  props:{
+    params:Object,
+  },
+  data(){
+    return{
+      defaultParams:{
+        okText:'Ok', 
+        okAction:'',
+        cancelText:'Annuler', 
+        cancelAction:'',
+        title:''
+      }
+    }
+  },
+  mounted(){
+    if(this.params){
+      this.defaultParams = Object.assign(this.defaultParams,this.params);
+    }
+  }
 }
 </script>
 
@@ -22,6 +48,7 @@ export default {
     bottom:0;
     left:0;
     right:0;
+    z-index:200;
 }
 .popup{
   background-color:white;
@@ -29,13 +56,37 @@ export default {
   top:50%;
   left:50%;
   width:80%;
-  padding:1%;
+  max-height:55%;
+  padding:0;
   transform:translate(-50%,-50%);
 }
 .popup button{
-    width:8rem;
-    padding:0.5rem;
-    border:1px solid #ddd;
+    width:45%;
+    padding:0.4rem;
+    text-transform:uppercase;
+    color:white;
+    margin:0;
+    font-size:0.8rem;
+}
+.popup header{
+  font-size:1.1rem;
+  padding:0.6rem 1rem;
+  color:white;
+  background-color:#4b89dc;
+}
+.popup .container{
+  padding:2rem 0.2rem;
+  font-size:1rem;
+  color:#222;
+}
+.popup header + .container{
+  padding:0.4rem 0.2rem;
+}
+.popup footer{
+  padding:0.5rem 0;
+  background:linear-gradient(to right, #4b89dc, #4b89dc 49%, #888 50%, #888);
+  font-size:0;
+  text-align:center;
 }
 
 </style>

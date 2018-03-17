@@ -83,7 +83,7 @@ export default {
     buffering(){
       console.log('buffering');
       if (this.paused){
-        this.playVideo();
+        //this.playVideo();
       }
       this.setProgressByGet();
     },
@@ -111,7 +111,7 @@ export default {
     loadVideoById(id){
       if (this.player){
         console.log(id);
-        //this.player.loadVideoById(id);
+        this.player.loadVideoById(id);
         this.setProgressByGet();
       }
     },

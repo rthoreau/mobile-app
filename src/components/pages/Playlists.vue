@@ -1,5 +1,5 @@
 <template>
-  <div id="playlist">
+  <div id="playlists">
     <header class="page-header">
       <span class="page-title">Playlists</span>
       <router-link v-bind:to="nextIdLink">
