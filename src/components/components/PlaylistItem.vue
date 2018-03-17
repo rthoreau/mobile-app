@@ -11,19 +11,24 @@
     </div>
     <svg class="submenu-link" viewBox="0 0 7.234 31.32" @click="submenuVisible = !submenuVisible"><use xlink:href="#icon-submenu"></use></svg>
     <SubMenu v-if="submenuVisible" v-bind:links="links"></SubMenu>
+    <Popup v-if="popupVisible" v-bind:params="popupParams">
+      Supprimer la playlist ?
+    </Popup>
   </div>
 </template>
 
 <script>
 import SubMenu from '../components/SubMenu'
 import {mapActions} from 'vuex'
+import Popup from '../components/Popup'
 export default {
   name: 'MusicItem',
   props:{
     id:String,
   },
   components:{
-    SubMenu
+    SubMenu,
+    Popup
   },
   data(){
     return{
@@ -31,22 +36,31 @@ export default {
       submenuVisible:false,
       links:[
         {text:'Accéder à la playlist', action:'Playlist/' + this.id, mode:'router'},
-        {text:'Supprimer la playlist', action: () => this.deletePlaylist()}
-      ]
+        {text:'Supprimer la playlist', action: () => this.deletePlaylist(this.id)}
+      ],
+      popupVisible:false,
+      popupParams:{
+        okAction:() => this.deletePlaylist(this.id, true), 
+        cancelAction:() => this.popupVisible = false
+      }
     }
   },
   methods:{
-    deletePlaylist(){
-      //TODO popu component
-      if (confirm('Supprimer la playlist ' + this.playlist.name + ' ?')){
-        console.log('test')
+    deletePlaylist(id, confirmed){
+      confirmed = confirmed || false;
+      if (confirmed){
+        var playlists = this.$store.getters['manageStore/getPlaylists'];
+        delete playlists[this.id];
+        this.setPlaylists(playlists);
+        this.popupVisible = false;
+      }else{
+        this.popupVisible = true;
       }
     },
     ...mapActions({
       setPlaylists: 'manageStore/setPlaylists'
     })
   }
-  
 }
 </script>
 

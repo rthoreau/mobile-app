@@ -75,12 +75,14 @@ export default {
   background-color:#4b89dc;
 }
 .popup .container{
-  padding:2rem 0.2rem;
+  padding:2rem 0.8rem;
   font-size:1rem;
   color:#222;
+  text-align:center;
 }
 .popup header + .container{
-  padding:0.4rem 0.2rem;
+  padding:0.8rem 0.8rem;
+  text-align:left;
 }
 .popup footer{
   padding:0.5rem 0;

@@ -7,6 +7,7 @@
       </router-link>
     </header>
     <div class="page-content">
+      <button @click="test()">test</button>
       <PlaylistItem 
       v-for="(data, index) in playlists" 
       v-bind:key="index" 
@@ -17,6 +18,7 @@
 
 <script>
 import PlaylistItem from '../components/PlaylistItem'
+import {mapGetters} from 'vuex'
 export default {
   name: 'Playlists',
   components: {
@@ -30,6 +32,22 @@ export default {
   },
   mounted(){
     this.nextIdLink = "/Playlist/" + (parseInt(Object.keys(this.playlists).pop()) + 1) + "/edit";
+  },
+  computed:{
+     ...mapGetters({
+      getPlaylists: 'manageStore/getPlaylists'
+    }),
+  },
+  watch:{
+    getPlaylists: function(){
+      console.log('jey')
+      this.playlists = this.$store.getters['manageStore/getPlaylists']
+    }
+  },
+  methods:{
+    test(){
+      this.playlists = this.$store.getters['manageStore/getPlaylists']
+    }
   }
 }
 </script>

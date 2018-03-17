@@ -106,7 +106,7 @@
 import AppHeader from './components/AppHeader.vue'
 import AppPlayer from './components/AppPlayer.vue'
 
-export default {//html webpack plugin minify html false
+export default {
   name: 'app',
   components: {
     AppHeader,
@@ -157,6 +157,7 @@ body{
   overflow:scroll;
   margin:4rem 0;
   text-align:left;
+  min-height:calc(100% - 12rem)
 }
 .page-header + .page-content{
   margin-top:4em;
@@ -214,6 +215,53 @@ ul{
 a{
   text-decoration:none;
   color:inherit;
+}
+input[type="checkbox"]{
+  position:absolute;
+  left:-999px;
+}
+label.checkbox{
+  display:block;
+  padding:0.4rem 0;
+  font-size:1rem;
+  position:relative;
+  transition:all 0.5s;
+}
+label.checkbox:before{
+  content:'';
+  width:1.2rem;
+  height:1.2rem;
+  border:0.05rem solid #888;
+  background-color:white;
+  position:absolute;
+  right:0;
+  top:50%;
+  transform:translate(0,-50%);
+  transition:all 0.5s;
+}
+input:checked + label.checkbox{
+  color:#5d9cec;
+}
+input:checked + label.checkbox:before{
+  background-color:#5d9cec;
+  border-color:#5d9cec;
+}
+ul.selection li{
+  position:relative;
+  padding:0.4rem 0;
+}
+ul.selection li + li{
+  margin-top:0.1rem;
+  padding-top:0.5rem;
+}
+ul.selection li + li:before{
+  content:'';
+  position:absolute;
+  top:0;
+  left:1%;
+  width:98%;
+  height:0.1rem;
+  background-color:#eee;
 }
 .music-plateform{
   position:absolute;

@@ -111,7 +111,7 @@ export default {
     loadVideoById(id){
       if (this.player){
         console.log(id);
-        this.player.loadVideoById(id);
+        //this.player.loadVideoById(id);
         this.setProgressByGet();
       }
     },
@@ -205,7 +205,7 @@ export default {
 #appPlayer{
   position:fixed;
   bottom:0;
-  height:3.85em;
+  height:3.85rem;
   width:100%;
   background-color:#4b89dc;
   padding:0.5rem 4%;

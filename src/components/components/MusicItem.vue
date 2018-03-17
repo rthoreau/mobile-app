@@ -16,9 +16,9 @@
     <svg class="submenu-link" viewBox="0 0 7.234 31.32" @click="submenuVisible = !submenuVisible"><use xlink:href="#icon-submenu"></use></svg>
     <SubMenu v-if="submenuVisible" v-bind:links="links"></SubMenu>
     <Popup v-if="popupVisible" v-bind:params="popupParams">
-      <ul>
+      <ul class="selection">
         <li v-for="(playlist, index) in playlists" v-bind:key="index">
-          <label><input type="checkbox"> {{playlist.name}}</label>
+          <input type="checkbox" v-bind:id="'check'+index"><label class="checkbox" v-bind:for="'check'+index"> {{playlist.name}}</label>
         </li>
       </ul>
     </Popup>
@@ -49,8 +49,7 @@ export default {
       submenuVisible:false,
       links:[
         {text:'Ajouter à la file', action:() => console.log('TODO')},
-        {text:'Ajouter à une playlist', action: () => this.popupVisible = true},
-        {text:'Supprimer de mes favoris', action: () => console.log('TODO')}
+        {text:'Ajouter à une playlist', action: () => this.popupVisible = true}
       ],
       popupVisible:false,
       popupParams:{
@@ -78,6 +77,9 @@ export default {
     setTimeout(() => {
       this.loaded = true;
     }, 1000);
+    if (this.music.favorite){
+      this.links.push({text:'Supprimer des favoris', action: () => console.log('TODO')});
+    }
   }
 }
 </script>
@@ -108,9 +110,10 @@ export default {
 .music-content{
   display:inline-block;
   text-align:left;
-  width:76%;
+  width:74%;
+  margin-right:2%;
   vertical-align: middle;
-  width:calc(98% - 4.8rem);
+  width:calc(96% - 4.8rem);
   font-size:1rem;
   vertical-align: top;
 }
