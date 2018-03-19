@@ -17,7 +17,7 @@
         <svg viewBox="0 0 7.234 31.32"><use xlink:href="#icon-submenu"></use></svg>
       </a></li>
     </ul>
-    <SubMenu v-if="submenuVisible" v-bind:links="links"></SubMenu>
+    <SubMenu v-if="submenuVisible" v-bind:links="links" @closeMenu="submenuVisible = false"></SubMenu>
   </header>
 </template>
 

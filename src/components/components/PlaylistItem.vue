@@ -1,5 +1,5 @@
 <template>
-  <div class="playlist-item item">
+  <div class="playlist-item item" v-bind:class="submenuVisible ? 'active' : ''">
     <div class="playlist-content">
       <span class="playlist-name">{{playlist.name}}</span>
       <ul class="playlist-music-list">
@@ -10,7 +10,7 @@
       </ul>
     </div>
     <svg class="submenu-link" viewBox="0 0 7.234 31.32" @click="submenuVisible = !submenuVisible"><use xlink:href="#icon-submenu"></use></svg>
-    <SubMenu v-if="submenuVisible" v-bind:links="links"></SubMenu>
+    <SubMenu v-if="submenuVisible" v-bind:links="links" @closeMenu="submenuVisible = false"></SubMenu>
     <Popup v-if="popupVisible" v-bind:params="popupParams">
       Supprimer la playlist ?
     </Popup>

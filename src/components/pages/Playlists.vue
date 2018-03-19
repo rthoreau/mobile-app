@@ -53,4 +53,8 @@ export default {
 </script>
 
 <style>
+#playlists .page-content{
+  padding-right:0;
+  padding-left:0;
+}
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="music-item item">
+  <div class="music-item item" v-bind:class="submenuVisible ? 'active' : ''">
     <div class="music-plateform" v-bind:class="music.plateform" @click="setCurrentMusic(uid)">
       <PlateformIcon v-bind:plateform="music.plateform"/>
     </div>
@@ -14,7 +14,7 @@
       <span class="music-duration">{{hmsDuration(music.duration)}}</span>
     </div>
     <svg class="submenu-link" viewBox="0 0 7.234 31.32" @click="submenuVisible = !submenuVisible"><use xlink:href="#icon-submenu"></use></svg>
-    <SubMenu v-if="submenuVisible" v-bind:links="links"></SubMenu>
+    <SubMenu v-if="submenuVisible" v-bind:links="links" @closeMenu="submenuVisible = false"></SubMenu>
     <Popup v-if="popupVisible" v-bind:params="popupParams">
       <ul class="selection">
         <li v-for="(playlist, index) in playlists" v-bind:key="index">
@@ -88,7 +88,7 @@ export default {
 .music-item{
   position:relative;
   font-size:0;
-  margin-bottom:1rem;
+  padding:0.5rem 4%;
 }
 .music-thumbnail-container{
   position:relative;
@@ -122,8 +122,5 @@ export default {
 }
 .music-title{
   font-weight:bold;
-}
-.music-item .submenu-link{
-
 }
 </style>

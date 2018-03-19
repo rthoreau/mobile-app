@@ -1,7 +1,7 @@
 <template>
   <div id="favorite">
     <header class="page-header"><span class="page-title">Favoris</span><svg class="submenu-link" viewBox="0 0 7.234 31.32" @click="submenuVisible = !submenuVisible"><use xlink:href="#icon-submenu"></use></svg></header>
-    <SubMenu v-if="submenuVisible" v-bind:links="links"></SubMenu>
+    <SubMenu v-if="submenuVisible" v-bind:links="links" @closeMenu="submenuVisible = false"></SubMenu>
     <div class="page-content">
       <MusicItem 
       v-for="(uid, index) in musics" 
@@ -34,4 +34,8 @@ export default {
 </script>
 
 <style>
+#favorite .page-content{
+  padding-left:0;
+  padding-right:0;
+}
 </style>

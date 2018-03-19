@@ -1,9 +1,9 @@
 <template>
-  <div class="submenu">
+  <div class="submenu" v-bind:class="supClass" v-on-clickaway="closeMenu">
     <ul>
       <li v-if="links" v-for="(link, index) in links" 
         v-bind:key="index">
-        <a @click="link.action" v-if="link.mode !== 'router'">{{link.text}}</a>
+        <a @click="callAction(link)" v-if="link.mode !== 'router'">{{link.text}}</a>
         <router-link v-if="link.mode === 'router'" v-bind:to="link.action">{{link.text}}</router-link>
         </li>
     </ul>
@@ -11,23 +11,43 @@
 </template>
 
 <script>
+import { mixin as clickaway } from 'vue-clickaway'
 export default {
+  mixins: [ clickaway ],
   name: 'SubMenu',
   props:{
     links:Array,
   },
   data(){
     return{
-      //submenuVisible: false,
+      supClass:''
     }
   },
-  /*methods: {
-    submenu () {
-      this.submenuVisible = !this.submenuVisible
+  methods: {
+    closeMenu () {
+      this.$emit('closeMenu', true);
+      return true;
+    },
+    callAction(link){
+      this.closeMenu();
+      link.action.call();
     }
-  }*/
+  },
   mounted(){
-    console.log(this.$el);
+    var offsetHeight = this.$el.parentElement.parentElement.offsetTop;
+    var scrollTop = document.scrollingElement.scrollTop;
+    var screenHeight = document.scrollingElement.offsetHeight;
+    var itemTop = this.$el.parentElement.offsetTop;
+    var menuHeight = this.$el.offsetHeight;
+    if ((screenHeight - 3*offsetHeight) < ((itemTop - scrollTop) + menuHeight + 0.5*offsetHeight)){
+      this.supClass = 'top';
+    }
+  },
+  beforeMount () {
+    window.addEventListener('scroll', this.closeMenu);
+  },
+  beforeDestroy () {
+    window.removeEventListener('scroll', this.closeMenu);
   }
 }
 </script>
@@ -38,7 +58,8 @@ export default {
   position:fixed;
   top:8rem;
   right:0.5rem;
-  z-index:100;
+  z-index:50;
+  color:#222;
 }
 .submenu ul{
   list-style-type:none;

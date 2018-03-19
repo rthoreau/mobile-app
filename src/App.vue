@@ -266,8 +266,8 @@ ul.selection li + li:before{
 .music-plateform{
   position:absolute;
   height:3.5rem;
-  left:0;
-  top:0;
+  left:4%;
+  top:0.5rem;
   z-index:0;
   width:4rem;
   transition:background-color 0.5s;
@@ -283,6 +283,10 @@ ul.selection li + li:before{
 }
 
 /* items */
+.item{
+  padding:0.5rem 4%;
+  transition:background-color 0.2s;
+}
 .item .submenu-link{
   height:1rem;
   vertical-align: middle;
@@ -291,7 +295,15 @@ ul.selection li + li:before{
 }
 .item .submenu{
   position:absolute;
-  top:0;
-  right:1rem;
+  top:100%;
+  right:0.6rem;
+  margin:0.4rem 0;
+}
+.item .submenu.top{
+  top:auto;
+  bottom:100%;
+}
+.item.active{
+  background-color:rgba(120,168,255,0.1);
 }
 </style>

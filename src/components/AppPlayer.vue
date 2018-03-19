@@ -210,6 +210,8 @@ export default {
   background-color:#4b89dc;
   padding:0.5rem 4%;
   text-align:left;
+  color:white;
+  z-index:100;
 }
 .progress{
   position:absolute;
