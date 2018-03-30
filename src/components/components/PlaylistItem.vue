@@ -49,16 +49,13 @@ export default {
     deletePlaylist(id, confirmed){
       confirmed = confirmed || false;
       if (confirmed){
-        var playlists = this.$store.getters['manageStore/getPlaylists'];
-        delete playlists[this.id];
-        this.setPlaylists(playlists);
-        this.popupVisible = false;
+        this.deletePlaylist
       }else{
         this.popupVisible = true;
       }
     },
     ...mapActions({
-      setPlaylists: 'manageStore/setPlaylists'
+      deletePlaylist:'manageStore/deletePlaylist'
     })
   }
 }

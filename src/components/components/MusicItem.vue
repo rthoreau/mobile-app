@@ -18,7 +18,7 @@
     <Popup v-if="popupVisible" v-bind:params="popupParams">
       <ul class="selection">
         <li v-for="(playlist, index) in playlists" v-bind:key="index">
-          <input type="checkbox" v-bind:id="'check'+index"><label class="checkbox" v-bind:for="'check'+index"> {{playlist.name}}</label>
+          <input type="checkbox" v-bind:id="'check' + index" v-bind:value="index" v-model="checkedPlaylists"><label class="checkbox" v-bind:for="'check'+index"> {{playlist.name}}</label>
         </li>
       </ul>
     </Popup>
@@ -47,6 +47,7 @@ export default {
       playlists:this.$store.getters['manageStore/getPlaylists'],
       music:this.$store.getters['manageStore/getMusics'][this.uid],
       submenuVisible:false,
+      checkedPlaylists:[],
       links:[
         {text:'Ajouter à la file', action:() => console.log('TODO')},
         {text:'Ajouter à une playlist', action: () => this.popupVisible = true}
@@ -54,7 +55,7 @@ export default {
       popupVisible:false,
       popupParams:{
         title:'Ajouter la musique dans...',
-        okAction:() => console.log('TODO'), 
+        okAction:() => console.log(this.checkedPlaylists), 
         cancelAction:() => this.popupVisible = false
       }
     }

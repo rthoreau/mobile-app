@@ -1,5 +1,6 @@
 const state = {
   currentMusic: 'ze7857586',
+  waitingLine:[],
   musics:{
     'ze7857586' :{url: 'https://www.youtube.com/watch?v=rVeMiVU77wo', title: 'alt-J (∆) Breezeblocks', author: 'alt-J', date: '2012-03-23', duration: '226', thumbnail: 'http://www.konbini.com/wp-content/blogs.dir/3/files/2012/06/Alt-j-Breezeblocks-480x279.jpg', plateform: 'lo', favorite:true},
     'z7281z6' :{url: 'https://www.youtube.com/watch?v=mEBrRSa7BaM', title: 'Klangnomad - Promo 2013', author: 'Klangnomad Music', date: '2013-08-09', duration: '2916', thumbnail: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2uL93WD0W8J_S1aLlE_cZVBxJ89RGQD4JvB8zZotXE7XvvW7v', plateform: 'yt', favorite:true},
@@ -13,10 +14,10 @@ const state = {
     'zertert6' :{url: 'https://www.youtube.com/watch?v=umjMGZw6vtw', title: 'Yann Tiersen - "La valse de Monstres" (full Album)', author: 'srtanada08', date: '2013-08-18', duration: '2642', thumbnail: 'http://www.kaltblut-magazine.com/wp-content/uploads/2014/08/yann-tiersen-4df4cdfab01e1-720x385.jpg', plateform: 'yt', favorite:true},
     'azdedbgyu' :{url: 'https://www.youtube.com/watch?v=D6TawVna7PQ', title: 'ESCAPE - A Beautiful Chill Mix', author: 'Pulse8', date: '2017-12-14', duration: '6183', thumbnail: 'https://i9.ytimg.com/sb/D6TawVna7PQ/storyboard3_L1/M2.jpg?sigh=rs%24AOn4CLDmljK3QQnUIad1F1p0KD8x3zZL_w', plateform: 'sp', favorite:false}
     },
-  playlists:{
-    14 : {name:'Sleep', musics:["5er84t568e","azdedbgyu"]},
-    22 : {name:'Test', musics:["bertertb","zertert6"]}
-  },
+  playlists:[
+    {id:14, name:'Sleep', musics:["5er84t568e","azdedbgyu"]},
+    {id:22, name:'Test', musics:["bertertb","zertert6"]}
+  ],
   searchResult:{
     'ert54e' :{url: 'https://www.youtube.com/watch?v=umjMGZw6vtw', title: 'Yann Tiersen - "La valse de Monstres" (full Album)', author: 'srtanada08', date: '2013-08-18', duration: '2642', thumbnail: 'http://www.kaltblut-magazine.com/wp-content/uploads/2014/08/yann-tiersen-4df4cdfab01e1-720x385.jpg', plateform: 'yt', favorite:true},
     'ze5750785z6' :{url: 'https://www.youtube.com/watch?v=D6TawVna7PQ', title: 'ESCAPE - A Beautiful Chill Mix', author: 'Pulse8', date: '2017-12-14', duration: '6183', thumbnail: 'https://i9.ytimg.com/sb/D6TawVna7PQ/storyboard3_L1/M2.jpg?sigh=rs%24AOn4CLDmljK3QQnUIad1F1p0KD8x3zZL_w', plateform: 'sp', favorite:false},
@@ -30,7 +31,8 @@ const getters = {
   getMusics: state => state.musics,
   getPlaylists: state => state.playlists,
   getFavorites:state => state.musics,
-  getSearchResult: state => state.searchResult
+  getSearchResult: state => state.searchResult,
+  getWaitingLine:state => state.waitingLine
 }
 
 const mutations = {
@@ -42,7 +44,12 @@ const mutations = {
   },
   mutatePlaylists: (state, playlists) => {
     state.playlists = playlists;
-    console.log(playlists);
+  },
+  mutateWaitingLing: (state, waitingLine) => {
+    state.waitingLine = waitingLine;
+  },
+  mutateDeletePlaylist: (state, index) => {
+    state.playlists = state.playlists.filter(playlist => playlist.id !== index);
   }
 }
 
@@ -55,7 +62,15 @@ const actions = {
   },
   setPlaylists (context, playlists) {
     context.commit('mutatePlaylists', playlists)
+  },
+  setWaitingLine (context, waitingLine) {
+    context.commit('mutateWaitingLine', waitingLine)
+  },
+  deletePlaylist (context, index) {
+
+    context.commit('mutateDeletePlaylist', index)
   }
+  
 }
 
 export default {namespaced: true, state, getters, mutations, actions}

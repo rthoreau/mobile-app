@@ -2,12 +2,12 @@
   <div id="playlist">
     <header class="page-header">
       <button @click="$router.go(-1)"><svg viewBox="0 0 23.622 34.425"><use xlink:href="#icon-back"></use></svg></button>
-      <input type="text" class="page-title edit" v-if="mode === 'edit'" placeholder="Party, Pop, Sleep..." v-model="playlist.name" v-on:keyup.enter="save()"/>
+      <input ref="editInput" type="text" class="page-title edit" v-if="mode === 'edit'" placeholder="Party, Pop, Sleep..." v-model="playlist.name" v-on:keyup.enter="save()"/>
       <span class="page-title" v-if="mode !== 'edit'">{{playlist.name}}</span>
       <svg class="submenu-link" viewBox="0 0 7.234 31.32" @click="submenuVisible = !submenuVisible" v-if="mode !== 'edit'"><use xlink:href="#icon-submenu"></use></svg>
       <button @click="save()" class="right" v-if="mode === 'edit'">OK</button>
     </header>
-    <SubMenu v-if="submenuVisible" v-bind:links="links"></SubMenu>
+    <SubMenu v-if="submenuVisible" v-bind:links="links" @closeMenu="submenuVisible = false"></SubMenu>
     <div class="page-content">
       <span v-if="mode !== 'edit' && !playlist.name">Cette playlist semble ne plus exister !<br><router-link to="/Playlists">Revenir aux playlists</router-link></span>
       <MusicItem 
@@ -39,6 +39,7 @@ export default {
       mode:this.$route.params.mode || '',
       playlist:{name:'', musics:[]},
       submenuVisible:false,
+      editInput:'',
       links : [
         {text:'Modifier la playlist', action: () => this.changeMode()},
         {text:'Supprimer la playlist', action: () => this.deletePlaylist()}
@@ -73,6 +74,9 @@ export default {
     },
     changeMode(){
       this.mode = this.mode === 'edit' ? '' : 'edit';
+      if (this.mode === 'edit'){
+        this.$nextTick(() => this.$refs.editInput.focus())
+      }
     }
   },
   computed:{
@@ -83,6 +87,7 @@ export default {
   mounted(){
     var playlist = this.getPlaylists[this.id];
     this.playlist = playlist ? playlist : this.playlist;
+    this.editInput = this.$refs.editInput;
   }
 }
 </script>
