@@ -4,9 +4,9 @@
     <SubMenu v-if="submenuVisible" v-bind:links="links" @closeMenu="submenuVisible = false"></SubMenu>
     <div class="page-content">
       <MusicItem 
-      v-for="(uid, index) in musics" 
+      v-for="(data, index) in musics" 
       v-bind:key="index" 
-      v-bind:uid="index"></MusicItem>
+      v-bind:music="data"></MusicItem>
     </div>
   </div>
 </template>
@@ -34,8 +34,4 @@ export default {
 </script>
 
 <style>
-#favorite .page-content{
-  padding-left:0;
-  padding-right:0;
-}
 </style>

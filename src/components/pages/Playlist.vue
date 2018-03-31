@@ -11,9 +11,9 @@
     <div class="page-content">
       <span v-if="mode !== 'edit' && !playlist.name">Cette playlist semble ne plus exister !<br><router-link to="/Playlists">Revenir aux playlists</router-link></span>
       <MusicItem 
-      v-for="(uid, index) in playlist.musics" 
+      v-for="(id, index) in playlist.musics" 
       v-bind:key="index" 
-      v-bind:uid="uid"></MusicItem>
+      v-bind:music="getMusic(id)"></MusicItem>
     </div>
     <Popup v-if="popupVisible" v-bind:params="popupParams">
       Supprimer la playlist ?
@@ -42,11 +42,11 @@ export default {
       editInput:'',
       links : [
         {text:'Modifier la playlist', action: () => this.changeMode()},
-        {text:'Supprimer la playlist', action: () => this.deletePlaylist()}
+        {text:'Supprimer la playlist', action: () => this.callDeletePlaylist()}
       ],
       popupVisible:false,
       popupParams:{
-        okAction:() => this.deletePlaylist(true), 
+        okAction:() => this.callDeletePlaylist(true), 
         cancelAction:() => this.popupVisible = false
       }
     }
@@ -55,20 +55,22 @@ export default {
     ...mapActions({
       setPlaylists: 'manageStore/setPlaylists'
     }),
-    deletePlaylist(confirmed){
+    callDeletePlaylist(confirmed){
       confirmed = confirmed || false;
       if (confirmed){
-        var playlists = this.$store.getters['manageStore/getPlaylists'];
-        delete playlists[this.id];
-        this.setPlaylists(playlists);
-        this.$router.push({path: '/Playlists'});
+        this.deletePlaylist(this.playlist.id);
       }else{
         this.popupVisible = true;
       }
     },
     save(){
       var playlists = this.$store.getters['manageStore/getPlaylists'];
-      playlists[this.id] = this.playlist;
+      var index = playlists.findIndex(playlist => playlist.id === this.playlist.id);
+      if (index === -1){
+        playlists.push(this.playlist);
+      }else{
+        playlists[index] = this.playlist;
+      }
       this.setPlaylists(playlists);
       this.changeMode();
     },
@@ -77,16 +79,19 @@ export default {
       if (this.mode === 'edit'){
         this.$nextTick(() => this.$refs.editInput.focus())
       }
-    }
+    },
+    ...mapActions({
+      deletePlaylist:'manageStore/deletePlaylist'
+    })
   },
   computed:{
      ...mapGetters({
-      getPlaylists: 'manageStore/getPlaylists'
+      getPlaylist: 'manageStore/getPlaylist',
+      getMusic: 'manageStore/getMusic'
     }),
   },
   mounted(){
-    var playlist = this.getPlaylists[this.id];
-    this.playlist = playlist ? playlist : this.playlist;
+    this.playlist = this.getPlaylist(this.id);
     this.editInput = this.$refs.editInput;
   }
 }

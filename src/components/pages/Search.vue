@@ -15,7 +15,7 @@
       <MusicItem 
       v-for="(music, index) in searchResult" 
       v-bind:key="index" 
-      v-bind:data="music"></MusicItem>
+      v-bind:music="music"></MusicItem>
       <p v-if="searchResult.length === 0">You just want your music ?<br> Change source to your phone !</p>
     </div>
   </div>
@@ -92,5 +92,8 @@ export default {
   .search-icon{
     fill:white;
     height:100%;
+  }
+  #search .page-content{
+    text-align:center;
   }
 </style>

@@ -8,9 +8,9 @@
     </header>
     <div class="page-content">
       <PlaylistItem 
-      v-for="(data, index) in getPlaylists" 
-      v-bind:key="index" 
-      v-bind:id="index"></PlaylistItem>
+      v-for="(data) in getPlaylists" 
+      v-bind:key="data.id" 
+      v-bind:playlist="data"></PlaylistItem>
     </div>
   </div>
 </template>
@@ -30,7 +30,8 @@ export default {
     }
   },
   mounted(){
-    this.nextIdLink = "/Playlist/" + (this.getPlaylists[this.getPlaylists.length -1].id + 1) + "/edit";
+    var nextId = this.getPlaylists.length ? (parseInt(this.getPlaylists[this.getPlaylists.length -1].id) + 1) : 1;
+    this.nextIdLink = "/Playlist/" + nextId + "/edit";
   },
   computed:{
      ...mapGetters({
@@ -41,8 +42,4 @@ export default {
 </script>
 
 <style>
-#playlists .page-content{
-  padding-right:0;
-  padding-left:0;
-}
 </style>

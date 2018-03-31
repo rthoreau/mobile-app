@@ -1,6 +1,6 @@
 <template>
   <div class="music-item item" v-bind:class="submenuVisible ? 'active' : ''">
-    <div class="music-plateform" v-bind:class="music.plateform" @click="setCurrentMusic(uid)">
+    <div class="music-plateform" v-bind:class="music.plateform" @click="setCurrentMusic(id)">
       <PlateformIcon v-bind:plateform="music.plateform"/>
     </div>
     <div class="music-thumbnail-container" @click="setCurrentMusic(uid)">
@@ -34,7 +34,7 @@ import Popup from '../components/Popup'
 export default {
   name: 'MusicItem',
   props:{
-    uid:String
+    music:Object
   },
   components: {
     PlateformIcon,
@@ -45,7 +45,6 @@ export default {
     return{
       loaded:false,
       playlists:this.$store.getters['manageStore/getPlaylists'],
-      music:this.$store.getters['manageStore/getMusics'][this.uid],
       submenuVisible:false,
       checkedPlaylists:[],
       links:[

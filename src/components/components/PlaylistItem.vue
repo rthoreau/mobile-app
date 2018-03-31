@@ -6,7 +6,7 @@
         <li
         v-for="(id, index) in playlist.musics" 
         v-bind:key="index" 
-        v-bind:uid="index">{{index}} : {{$store.getters['manageStore/getMusics'][id].title}}</li>
+        v-bind:id="id">{{index}} : {{getMusic(id).title}}</li>
       </ul>
     </div>
     <svg class="submenu-link" viewBox="0 0 7.234 31.32" @click="submenuVisible = !submenuVisible"><use xlink:href="#icon-submenu"></use></svg>
@@ -19,12 +19,12 @@
 
 <script>
 import SubMenu from '../components/SubMenu'
-import {mapActions} from 'vuex'
+import {mapActions, mapGetters} from 'vuex'
 import Popup from '../components/Popup'
 export default {
   name: 'MusicItem',
   props:{
-    id:String,
+    playlist:Object,
   },
   components:{
     SubMenu,
@@ -32,10 +32,9 @@ export default {
   },
   data(){
     return{
-      playlist:this.$store.getters['manageStore/getPlaylists'][this.id],
       submenuVisible:false,
       links:[
-        {text:'Accéder à la playlist', action:'Playlist/' + this.id, mode:'router'},
+        {text:'Accéder à la playlist', action:'Playlist/' + this.playlist.id, mode:'router'},
         {text:'Supprimer la playlist', action: () => this.deletePlaylist(this.id)}
       ],
       popupVisible:false,
@@ -56,6 +55,11 @@ export default {
     },
     ...mapActions({
       deletePlaylist:'manageStore/deletePlaylist'
+    })
+  },
+  computed:{
+     ...mapGetters({
+      getMusic: 'manageStore/getMusic'
     })
   }
 }

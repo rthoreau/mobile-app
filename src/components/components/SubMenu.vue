@@ -30,7 +30,11 @@ export default {
     },
     callAction(link){
       this.closeMenu();
-      link.action.call();
+      try{
+        link.action.call()
+      }catch{
+        console.log('Bad action in links')
+      }
     }
   },
   mounted(){

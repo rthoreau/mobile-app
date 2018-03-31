@@ -152,7 +152,7 @@ body{
 }
 .page-content{
   display:inline-block;
-  padding:0.8rem 4%;
+  padding:0.8rem 0;
   width:100%;
   overflow:scroll;
   margin:4rem 0;
