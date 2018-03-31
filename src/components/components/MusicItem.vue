@@ -1,14 +1,14 @@
 <template>
   <div class="music-item item" v-bind:class="submenuVisible ? 'active' : ''">
-    <div class="music-plateform" v-bind:class="music.plateform" @click="setCurrentMusic(id)">
+    <div class="music-plateform" v-bind:class="music.plateform" @click="setCurrentMusic(music.id)">
       <PlateformIcon v-bind:plateform="music.plateform"/>
     </div>
-    <div class="music-thumbnail-container" @click="setCurrentMusic(uid)">
+    <div class="music-thumbnail-container" @click="setCurrentMusic(music.id)">
       <transition name="appear">
         <img v-bind:src="music.thumbnail" alt="" class="music-thumbnail" v-if="loaded">
       </transition>
     </div>
-    <div class="music-content" @click="setCurrentMusic(uid)">
+    <div class="music-content" @click="setCurrentMusic(music.id)">
       <span class="music-title">{{music.title}}</span>
       <span class="music-author">{{music.author}}</span>
       <span class="music-duration">{{hmsDuration(music.duration)}}</span>
@@ -17,8 +17,8 @@
     <SubMenu v-if="submenuVisible" v-bind:links="links" @closeMenu="submenuVisible = false"></SubMenu>
     <Popup v-if="popupVisible" v-bind:params="popupParams">
       <ul class="selection">
-        <li v-for="(playlist, index) in playlists" v-bind:key="index">
-          <input type="checkbox" v-bind:id="'check' + index" v-bind:value="index" v-model="checkedPlaylists"><label class="checkbox" v-bind:for="'check'+index"> {{playlist.name}}</label>
+        <li v-for="(playlist) in playlists" v-bind:key="playlist.id">
+          <input type="checkbox" v-bind:id="'check' + playlist.id" v-bind:value="playlist.id" v-model="checkedPlaylists"><label class="checkbox" v-bind:for="'check'+playlist.id"> {{playlist.name}}</label>
         </li>
       </ul>
     </Popup>
@@ -54,14 +54,15 @@ export default {
       popupVisible:false,
       popupParams:{
         title:'Ajouter la musique dans...',
-        okAction:() => console.log(this.checkedPlaylists), 
+        okAction:() => this.addToPlaylists(), 
         cancelAction:() => this.popupVisible = false
       }
     }
   },
   methods:{
     ...mapActions({
-      setCurrentMusic: 'manageStore/setCurrentMusic'
+      setCurrentMusic: 'manageStore/setCurrentMusic',
+      addMusic: 'manageStore/addMusic'
     }),
     hmsDuration(val){
       var h = Math.floor(val/3600);
@@ -71,6 +72,10 @@ export default {
       var s = Math.floor(val%3600%60);
       s = s >= 10 ? s : '0' + s;
       return h+m+':'+s;
+    },
+    addToPlaylists(){
+      this.addMusic({musicId:this.music.id, playlistIds:this.checkedPlaylists});
+      this.popupVisible = false;
     }
   },
   mounted() {
@@ -80,6 +85,9 @@ export default {
     if (this.music.favorite){
       this.links.push({text:'Supprimer des favoris', action: () => console.log('TODO')});
     }
+  },
+  watch:{
+    popupVisible: this.checkedPlaylists = []
   }
 }
 </script>

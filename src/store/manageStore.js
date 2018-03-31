@@ -59,8 +59,16 @@ const mutations = {
   mutateWaitingLing: (state, waitingLine) => {
     state.waitingLine = waitingLine;
   },
-  mutateDeletePlaylist: (state, index) => {
-    state.playlists = state.playlists.filter(playlist => playlist.id !== index);
+  mutateDeletePlaylist: (state, playlistId) => {
+    state.playlists = state.playlists.filter(playlist => playlist.id !== playlistId);
+  },
+  mutateAddMusic: (state, params) => {
+    state.playlists.map(function (playlist){      
+      if (params.playlistIds.indexOf(playlist.id) !== -1){
+        playlist.musics.push(params.musicId);
+      }
+      return playlist;
+    });
   }
 }
 
@@ -77,8 +85,11 @@ const actions = {
   setWaitingLine (context, waitingLine) {
     context.commit('mutateWaitingLine', waitingLine)
   },
-  deletePlaylist (context, index) {
-    context.commit('mutateDeletePlaylist', index)
+  deletePlaylist (context, playlistId) {
+    context.commit('mutateDeletePlaylist', playlistId)
+  },
+  addMusic(context, params){
+    context.commit('mutateAddMusic', params)
   }
   
 }
