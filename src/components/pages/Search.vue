@@ -15,7 +15,9 @@
       <MusicItem 
       v-for="(music, index) in searchResult" 
       v-bind:key="index" 
-      v-bind:music="music"></MusicItem>
+      v-bind:music="music"
+      v-bind:page="'search'"
+      @refresh="search(true)"></MusicItem>
       <p v-if="searchResult.length === 0">You just want your music ?<br> Change source to your phone !</p>
     </div>
   </div>
@@ -23,6 +25,7 @@
 
 <script>
 import MusicItem from '../components/MusicItem'
+import {mapGetters} from 'vuex'
 export default {
   name: 'Search',
   components: {
@@ -32,17 +35,18 @@ export default {
     return {
       searchValue: '',
       searchResult: [],
-      musics: this.$store.getters['manageStore/getMusics']
     }
   },
   methods: {
-    search () {
+    search (refresh) {
       var searchValueParsed = this.searchValue.toLowerCase()
-      if (searchValueParsed.length < 3) {
-        console.log('Dude ! Give me the at least 3 chars ! :o')
-        return
+      if (!refresh){
+        if (searchValueParsed.length < 3) {
+          console.log('Dude ! Give me the at least 3 chars ! :o')
+          return
+        }
       }
-      this.searchResult = this.musics.filter(music => (music.title.toLowerCase().indexOf(searchValueParsed) > -1 || music.author.toLowerCase().indexOf(searchValueParsed) > -1))
+      this.searchResult = this.getSearchResult().filter(music => (music.title.toLowerCase().indexOf(searchValueParsed) > -1 || music.author.toLowerCase().indexOf(searchValueParsed) > -1))
     },
     focusSearch () {
       if (this.searchValue.length) {
@@ -51,7 +55,12 @@ export default {
         this.$refs.searchInput.focus()
       }
     }
-  }
+  },
+  computed:{
+     ...mapGetters({
+      getSearchResult: 'manageStore/getSearchResult'
+    }),
+  },
 }
 </script>
 

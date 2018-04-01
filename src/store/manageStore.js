@@ -22,7 +22,9 @@ const state = {
     {id:'ert54e', url: 'https://www.youtube.com/watch?v=umjMGZw6vtw', title: 'Yann Tiersen - "La valse de Monstres" (full Album)', author: 'srtanada08', date: '2013-08-18', duration: '2642', thumbnail: 'http://www.kaltblut-magazine.com/wp-content/uploads/2014/08/yann-tiersen-4df4cdfab01e1-720x385.jpg', plateform: 'yt', favorite:true},
     {id:'ze5750785z6', url: 'https://www.youtube.com/watch?v=D6TawVna7PQ', title: 'ESCAPE - A Beautiful Chill Mix', author: 'Pulse8', date: '2017-12-14', duration: '6183', thumbnail: 'https://i9.ytimg.com/sb/D6TawVna7PQ/storyboard3_L1/M2.jpg?sigh=rs%24AOn4CLDmljK3QQnUIad1F1p0KD8x3zZL_w', plateform: 'sp', favorite:false},
     {id:'a65468e468v4', url: 'https://www.youtube.com/watch?v=wYNAZz86DVo', title: 'C418 - One [full album] (2012)', author: '2nMusic', date: '2013-02-12', duration: '5743', thumbnail: 'https://f4.bcbits.com/img/a1911559443_10.jpg', plateform: 'yt', favorite:false},
-    {id:'ert5784ert', url: 'https://www.youtube.com/watch?v=pliDsyfUXcg', title: 'Indie Indie Folk - Summer 2015 Tracklist Included', author: 'Fernando Bueno', date: '2015-07-18', duration: '6949', thumbnail: 'https://i9.ytimg.com/sb/ZwBkXgWNs_M/storyboard3_L2/M0.jpg?sigh=rs%24AOn4CLBUyfI7x8IRqXF_2NdPeIb3UX8tKw', plateform: 'yt', favorite:true}
+    {id:'ert5784ert', url: 'https://www.youtube.com/watch?v=pliDsyfUXcg', title: 'Indie Indie Folk - Summer 2015 Tracklist Included', author: 'Fernando Bueno', date: '2015-07-18', duration: '6949', thumbnail: 'https://i9.ytimg.com/sb/ZwBkXgWNs_M/storyboard3_L2/M0.jpg?sigh=rs%24AOn4CLBUyfI7x8IRqXF_2NdPeIb3UX8tKw', plateform: 'yt', favorite:true},
+    {id:'stlkapml', url: 'https://www.youtube.com/watch?v=RCMXO9sBIcU', title: '"Everdream" by Epic Soul Factory', author: 'HDSounDI', date: '2016-04-15', duration: '509', thumbnail: 'https://i.ytimg.com/vi/vKauAsFACyE/maxresdefault.jpg', plateform: 'yt', favorite:false}
+
   ]
 }
 
@@ -42,16 +44,29 @@ const getters = {
     };
   },
   getFavorites:state => state.musics,
-  getSearchResult: state => state.searchResult,
+  getSearchResult: function (state){
+    return function(){
+      var fromMusic = [];
+      var mergedResult = state.searchResult;
+      mergedResult.map(function (music){
+        //Get information if music exist and is favorited
+        fromMusic = state.musics.filter(storedMusic => music.id === storedMusic.id);
+        if (fromMusic.length === 1 && fromMusic[0].favorite){
+          music.favorite = true;
+        }else{
+          music.favorite = false;
+        }
+        return music;
+      });
+      return state.searchResult;
+    }
+  },
   getWaitingLine:state => state.waitingLine
 }
 
 const mutations = {
   mutateCurrentMusic: (state, currentMusic) => {
     state.currentMusic = currentMusic;
-  },
-  mutateMusics: (state, musics) => {
-    state.musics = musics;
   },
   mutatePlaylists: (state, playlists) => {
     state.playlists = playlists;
@@ -60,24 +75,113 @@ const mutations = {
     state.waitingLine = waitingLine;
   },
   mutateDeletePlaylist: (state, playlistId) => {
+    //filter musics before removal
+    actions.filterMusics(state, state.playlists.filter(playlist => playlist.id === playlistId)[0].musics);
     state.playlists = state.playlists.filter(playlist => playlist.id !== playlistId);
   },
-  mutateAddMusic: (state, params) => {
-    state.playlists.map(function (playlist){      
-      if (params.playlistIds.indexOf(playlist.id) !== -1){
-        playlist.musics.push(params.musicId);
+  /**
+   * params:
+   * - action : add/remove
+   * - to : favorite/playlist
+   * - from favorite/playlist
+   * - source search/''
+   */
+  mutateMusic: (state, params) => {
+    console.log(params)
+    var needFilter = false;
+    var created = false;
+    if (params.action === 'add'){
+      //if call from search, add music if not in state.musics
+      if (params.source === 'search' && state.musics.filter(music => music.id === params.music.id).length === 0){
+        if (params.to === 'favorite'){
+          params.music.favorite = true;
+        }
+        state.musics.push(params.music);
+        created = true;
       }
-      return playlist;
-    });
+      if (params.to === 'playlist'){
+        state.playlists.map(function (playlist){      
+          if (params.playlistIds.indexOf(playlist.id) !== -1){
+            playlist.musics.push(params.musicId);
+          }
+          return playlist;
+        });
+      }else if (params.to === 'favorite' && !created){
+        state.musics.map(function (music){
+          if (music.id === params.musicId){
+            music.favorite = !music.favorite;
+            if (!music.favorite){
+              needFilter = true;
+              params.ids = [params.musicId];
+            }
+          }
+          return music;
+        });
+      }
+    }
+    if(needFilter || params.action === 'remove'){
+      var usedIds = [];
+      if (params.from === 'favorite'){
+        //Change .favorite from ids in params.ids
+        state.musics.map(function (music){
+          if (params.ids.indexOf(music.id) !== -1){
+            music.favorite = false;
+          }
+          return music;
+        });
+      }else{
+        //List ids from params.ids that are in at least one playlist
+        var i = 0;
+        //Check in all playlists
+        state.playlists.forEach(function (playlist){
+          //while there are ids and are not all used
+          i = 0;
+          while (i <= params.ids.length && usedIds.length !== params.ids.length){
+            console.log('indexof', playlist.musics.indexOf(params.ids[i]))
+            if (playlist.musics.indexOf(params.ids[i]) !== -1 && usedIds.indexOf(params.ids[i]) === -1){
+              console.log('id used', params.ids[i])
+              usedIds.push(params.ids[i]);
+            }
+            i++;
+          }
+        });
+      }
+      if (params.from === 'playlist'){
+        //Only filter array in params.playlistId
+        state.playlists.map(function (playlist){
+          if (parseInt(playlist.id) === params.playlistId){
+            //Keep only ids not in array
+            playlist.musics = playlist.musics.filter(id => params.ids.indexOf(id) === -1);
+          }
+          return playlist;
+        });
+      }else{
+        //List ids from params.ids that are favorite.length);
+        params.ids.forEach(function(id){
+          if (state.musics.filter(music => music.id === id && music.favorite === true).length > 0 && usedIds.indexOf(id) === -1){
+            usedIds.push(id);
+          }
+        });
+      }
+
+      console.log('usedIds',usedIds);
+      console.log('params.ids',params.ids);
+      //Keep musics that are favorite or in a playlist
+      if (params.ids.length !== usedIds.length){
+        //Keep ids not in params.ids or that are used
+        state.musics = state.musics.filter(music => params.ids.indexOf(music.id) === -1 || usedIds.indexOf(music.id) !== -1 || music.id === state.currentMusic);
+      }
+      console.log('filtered', state.musics)
+    }
   }
 }
+
+//tester filterMusic et AddMusic from = search
+
 
 const actions = {
   setCurrentMusic (context, currentMusic) {
     context.commit('mutateCurrentMusic', currentMusic)
-  },
-  setMusics (context, musics) {
-    context.commit('mutateMusics', musics)
   },
   setPlaylists (context, playlists) {
     context.commit('mutatePlaylists', playlists)
@@ -88,10 +192,14 @@ const actions = {
   deletePlaylist (context, playlistId) {
     context.commit('mutateDeletePlaylist', playlistId)
   },
-  addMusic(context, params){
-    context.commit('mutateAddMusic', params)
+  musicAction(context, params){
+    params.to = params.to ? params.to : 'playlist';
+    params.from = params.from ? params.from : '';
+    context.commit('mutateMusic', params)
+  },
+  filterMusics(context, ids){
+    context.commit('mutateRemoveMusic', {from:'', ids:ids})
   }
-  
 }
 
 export default {namespaced: true, state, getters, mutations, actions}

@@ -1,24 +1,25 @@
 <template>
-  <div class="music-item item" v-bind:class="submenuVisible ? 'active' : ''">
-    <div class="music-plateform" v-bind:class="music.plateform" @click="setCurrentMusic(music.id)">
-      <PlateformIcon v-bind:plateform="music.plateform"/>
+  <div class="music-item item" :class="submenuVisible ? 'active' : ''">
+    <div class="music-plateform" :class="music.plateform" @click="setCurrentMusic(music.id)">
+      <PlateformIcon :plateform="music.plateform"/>
     </div>
     <div class="music-thumbnail-container" @click="setCurrentMusic(music.id)">
       <transition name="appear">
-        <img v-bind:src="music.thumbnail" alt="" class="music-thumbnail" v-if="loaded">
+        <img :src="music.thumbnail" alt="" class="music-thumbnail" v-if="loaded">
       </transition>
     </div>
-    <div class="music-content" @click="setCurrentMusic(music.id)">
+    <div class="music-content" :class="page" @click="setCurrentMusic(music.id)">
       <span class="music-title">{{music.title}}</span>
       <span class="music-author">{{music.author}}</span>
       <span class="music-duration">{{hmsDuration(music.duration)}}</span>
     </div>
+    <svg v-if="page !== 'favorite'" class="favorite-link" :class="music.favorite ? 'favorite' : ''" viewBox="0 0 38.394 35.2" @click="addToFavorite()"><use xlink:href="#icon-favorite"></use></svg>
     <svg class="submenu-link" viewBox="0 0 7.234 31.32" @click="submenuVisible = !submenuVisible"><use xlink:href="#icon-submenu"></use></svg>
-    <SubMenu v-if="submenuVisible" v-bind:links="links" @closeMenu="submenuVisible = false"></SubMenu>
-    <Popup v-if="popupVisible" v-bind:params="popupParams">
+    <SubMenu v-if="submenuVisible" :links="links" @closeMenu="submenuVisible = false"></SubMenu>
+    <Popup v-if="popupVisible" :params="popupParams">
       <ul class="selection">
-        <li v-for="(playlist) in playlists" v-bind:key="playlist.id">
-          <input type="checkbox" v-bind:id="'check' + playlist.id" v-bind:value="playlist.id" v-model="checkedPlaylists"><label class="checkbox" v-bind:for="'check'+playlist.id"> {{playlist.name}}</label>
+        <li v-for="(playlist) in playlists" :key="playlist.id">
+          <input type="checkbox" :id="'check' + playlist.id" :value="playlist.id" v-model="checkedPlaylists"><label class="checkbox" :for="'check'+playlist.id"> {{playlist.name}}</label>
         </li>
       </ul>
     </Popup>
@@ -26,7 +27,7 @@
 </template>
 
 <script>
-import {mapActions} from 'vuex'
+import {mapActions, mapGetters} from 'vuex'
 import PlateformIcon from './PlateformIcon'
 import SubMenu from './SubMenu'
 import Popup from '../components/Popup'
@@ -34,7 +35,9 @@ import Popup from '../components/Popup'
 export default {
   name: 'MusicItem',
   props:{
-    music:Object
+    music:Object,
+    page:String,
+    playlistId:String
   },
   components: {
     PlateformIcon,
@@ -46,6 +49,7 @@ export default {
       loaded:false,
       playlists:this.$store.getters['manageStore/getPlaylists'],
       submenuVisible:false,
+      source:'',
       checkedPlaylists:[],
       links:[
         {text:'Ajouter à la file', action:() => console.log('TODO')},
@@ -62,7 +66,7 @@ export default {
   methods:{
     ...mapActions({
       setCurrentMusic: 'manageStore/setCurrentMusic',
-      addMusic: 'manageStore/addMusic'
+      musicAction: 'manageStore/musicAction',
     }),
     hmsDuration(val){
       var h = Math.floor(val/3600);
@@ -74,17 +78,31 @@ export default {
       return h+m+':'+s;
     },
     addToPlaylists(){
-      this.addMusic({musicId:this.music.id, playlistIds:this.checkedPlaylists});
+      this.musicAction({action:'add', musicId:this.music.id, playlistIds:this.checkedPlaylists});
       this.popupVisible = false;
+    },
+    addToFavorite(){
+      this.musicAction({action:'add', to:'favorite', musicId:this.music.id, source:this.source, music:this.music});
+      this.$emit('refresh', true);
     }
+  },
+  computed:{
+     ...mapGetters({
+      getMusic: 'manageStore/getMusic'
+    }),
   },
   mounted() {
     setTimeout(() => {
       this.loaded = true;
     }, 1000);
-    if (this.music.favorite){
-      this.links.push({text:'Supprimer des favoris', action: () => console.log('TODO')});
+    if (this.music.favorite && this.page === 'favorite'){
+      this.links.push({text:'Supprimer des favoris', action: () => this.musicAction({action:'remove', from:'favorite', ids:[this.music.id]})});
     }
+    if (this.page === 'playlist'){
+      this.links.push({text:'Supprimer de la playlist', 
+        action: () => this.musicAction({action:'remove', from:'playlist', musicId:this.music.id, playlistId:parseInt(this.playlistId)})});
+    }
+    this.source = this.page === 'search' ? this.page : '';
   },
   watch:{
     popupVisible: this.checkedPlaylists = []
@@ -118,17 +136,31 @@ export default {
 .music-content{
   display:inline-block;
   text-align:left;
-  width:74%;
+  width:62%;
   margin-right:2%;
   vertical-align: middle;
-  width:calc(96% - 4.8rem);
+  width:calc(84% - 4.8rem);
   font-size:1rem;
   vertical-align: top;
+}
+.music-content.favorite{
+  width:74%;
+  width:calc(96% - 4.8rem);
 }
 .music-content span{
   display:block;
 }
 .music-title{
   font-weight:bold;
+}
+.favorite-link{
+  display:inline-block;
+  vertical-align: middle;
+  width:8%;
+  margin-right:4%;
+  opacity:0.2;
+}
+.favorite-link.favorite{
+  opacity:1;
 }
 </style>

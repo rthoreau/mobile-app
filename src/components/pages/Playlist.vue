@@ -7,15 +7,17 @@
       <svg class="submenu-link" viewBox="0 0 7.234 31.32" @click="submenuVisible = !submenuVisible" v-if="mode !== 'edit'"><use xlink:href="#icon-submenu"></use></svg>
       <button @click="save()" class="right" v-if="mode === 'edit'">OK</button>
     </header>
-    <SubMenu v-if="submenuVisible" v-bind:links="links" @closeMenu="submenuVisible = false"></SubMenu>
+    <SubMenu v-if="submenuVisible" :links="links" @closeMenu="submenuVisible = false"></SubMenu>
     <div class="page-content">
       <span v-if="mode !== 'edit' && !playlist.name">Cette playlist semble ne plus exister !<br><router-link to="/Playlists">Revenir aux playlists</router-link></span>
       <MusicItem 
-      v-for="(id, index) in playlist.musics" 
-      v-bind:key="index" 
-      v-bind:music="getMusic(id)"></MusicItem>
+      v-for="(musicId, index) in getPlaylist(id).musics" 
+      :key="index" 
+      :music="getMusic(musicId)"
+      :playlistId="id"
+      :page="'playlist'"></MusicItem>
     </div>
-    <Popup v-if="popupVisible" v-bind:params="popupParams">
+    <Popup v-if="popupVisible" :params="popupParams">
       Supprimer la playlist ?
     </Popup>
   </div>
