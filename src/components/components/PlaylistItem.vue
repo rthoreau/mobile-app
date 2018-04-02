@@ -35,20 +35,20 @@ export default {
       submenuVisible:false,
       links:[
         {text:'Accéder à la playlist', action:'Playlist/' + this.playlist.id, mode:'router'},
-        {text:'Supprimer la playlist', action: () => this.deletePlaylist(this.id)}
+        {text:'Supprimer la playlist', action: () => this.callDeletePlaylist()}
       ],
       popupVisible:false,
       popupParams:{
-        okAction:() => this.deletePlaylist(this.id, true), 
+        okAction:() => this.callDeletePlaylist(true), 
         cancelAction:() => this.popupVisible = false
       }
     }
   },
   methods:{
-    deletePlaylist(id, confirmed){
+    callDeletePlaylist(confirmed){
       confirmed = confirmed || false;
       if (confirmed){
-        this.deletePlaylist
+        this.deletePlaylist(this.playlist);
       }else{
         this.popupVisible = true;
       }

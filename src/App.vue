@@ -157,7 +157,8 @@ body{
   overflow:scroll;
   margin:4rem 0;
   text-align:left;
-  min-height:calc(100% - 12rem)
+  /*min-height:calc(100% - 12rem)*/
+  min-height:calc(100% - 4rem);
 }
 .page-header + .page-content{
   margin-top:4em;

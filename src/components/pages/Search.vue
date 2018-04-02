@@ -19,31 +19,35 @@
       v-bind:page="'search'"
       @refresh="search(true)"></MusicItem>
       <p v-if="searchResult.length === 0">You just want your music ?<br> Change source to your phone !</p>
+      <ErrorMessage :error="error" v-if="error" @closeMessage="error = false"/>
     </div>
   </div>
 </template>
 
 <script>
 import MusicItem from '../components/MusicItem'
+import ErrorMessage from '../components/ErrorMessage'
 import {mapGetters} from 'vuex'
 export default {
   name: 'Search',
   components: {
-    MusicItem
+    MusicItem,
+    ErrorMessage
   },
   data () {
     return {
       searchValue: '',
       searchResult: [],
+      error:false
     }
   },
   methods: {
     search (refresh) {
       var searchValueParsed = this.searchValue.toLowerCase()
       if (!refresh){
-        if (searchValueParsed.length < 3) {
-          console.log('Dude ! Give me the at least 3 chars ! :o')
-          return
+        if (searchValueParsed.split(' ').join('').length < 3) {
+          this.error = 'Entrez au moins 3 caractères !';
+          return;
         }
       }
       this.searchResult = this.getSearchResult().filter(music => (music.title.toLowerCase().indexOf(searchValueParsed) > -1 || music.author.toLowerCase().indexOf(searchValueParsed) > -1))

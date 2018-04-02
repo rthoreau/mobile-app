@@ -55,13 +55,14 @@ export default {
   }
   #appHeader .nav li{
     display:inline-block;
-    width:23%;
+    width:24.1%;
     height:100%;
     text-align:center;
+    vertical-align: middle;
   }
   #appHeader .nav li:last-child{
     display:inline-block;
-    width:8%;
+    width:3.6%;
   }
   #appHeader .nav a{
     position:relative;
@@ -87,6 +88,9 @@ export default {
     fill:white;
     height:100%;
     transition:fill 0.5s;
+  }
+   #appHeader .nav li:last-child svg{
+    height:2rem;
   }
   #appHeader .nav a.router-link-exact-active svg{
     fill:#215292;

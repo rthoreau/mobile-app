@@ -1,24 +1,34 @@
 <template>
   <div id="playlist">
     <header class="page-header">
-      <button @click="$router.go(-1)"><svg viewBox="0 0 23.622 34.425"><use xlink:href="#icon-back"></use></svg></button>
+
+      <button @click="back()"><svg viewBox="0 0 23.622 34.425"><use xlink:href="#icon-back"></use></svg></button>
+
       <input ref="editInput" type="text" class="page-title edit" v-if="mode === 'edit'" placeholder="Party, Pop, Sleep..." v-model="playlist.name" v-on:keyup.enter="save()"/>
+
       <span class="page-title" v-if="mode !== 'edit'">{{playlist.name}}</span>
+
       <svg class="submenu-link" viewBox="0 0 7.234 31.32" @click="submenuVisible = !submenuVisible" v-if="mode !== 'edit'"><use xlink:href="#icon-submenu"></use></svg>
+
       <button @click="save()" class="right" v-if="mode === 'edit'">OK</button>
     </header>
+    
     <SubMenu v-if="submenuVisible" :links="links" @closeMenu="submenuVisible = false"></SubMenu>
+
     <div class="page-content">
       <span v-if="mode !== 'edit' && !playlist.name">Cette playlist semble ne plus exister !<br><router-link to="/Playlists">Revenir aux playlists</router-link></span>
       <MusicItem 
-      v-for="(musicId, index) in getPlaylist(id).musics" 
+      v-for="(musicId, index) in (mode === 'edit' ? playlist.musics : getPlaylist(id).musics)" 
       :key="index" 
       :music="getMusic(musicId)"
       :playlistId="id"
-      :page="'playlist'"></MusicItem>
+      :page="'playlist'"
+      :mode="mode"
+      @delete="deleteFromPlaylist(musicId)"></MusicItem>
+      <ErrorMessage :error="error" v-if="error" @closeMessage="error = false"/>
     </div>
     <Popup v-if="popupVisible" :params="popupParams">
-      Supprimer la playlist ?
+      {{popupText}}
     </Popup>
   </div>
 </template>
@@ -27,13 +37,15 @@
 import {mapGetters, mapActions} from 'vuex'
 import MusicItem from '../components/MusicItem'
 import SubMenu from '../components/SubMenu'
+import ErrorMessage from '../components/ErrorMessage'
 import Popup from '../components/Popup'
 export default {
   name: 'Playlist',
   components: {
     MusicItem,
     SubMenu,
-    Popup
+    Popup,
+    ErrorMessage
   },
   data () {
     return {
@@ -41,31 +53,51 @@ export default {
       mode:this.$route.params.mode || '',
       playlist:{name:'', musics:[]},
       submenuVisible:false,
+      error:false,
       editInput:'',
+      deleteIds:[],
       links : [
         {text:'Modifier la playlist', action: () => this.changeMode()},
         {text:'Supprimer la playlist', action: () => this.callDeletePlaylist()}
       ],
       popupVisible:false,
-      popupParams:{
-        okAction:() => this.callDeletePlaylist(true), 
-        cancelAction:() => this.popupVisible = false
-      }
+      popupText:'',
+      popupParams:{}
     }
   },
   methods:{
     ...mapActions({
-      setPlaylists: 'manageStore/setPlaylists'
+      setPlaylists: 'manageStore/setPlaylists',
+      deletePlaylist:'manageStore/deletePlaylist',
+      music:'manageStore/music'
     }),
     callDeletePlaylist(confirmed){
       confirmed = confirmed || false;
       if (confirmed){
-        this.deletePlaylist(this.playlist.id);
+        this.deletePlaylist(this.playlist);
+        this.$router.push({path:'/Playlists'});
       }else{
+        this.popupText = 'Supprimer la playlist ?';
+        this.popupParams = {
+        okAction:() => this.callDeletePlaylist(true), 
+        cancelAction:() => this.popupVisible = false
+      }
         this.popupVisible = true;
       }
     },
+    hasValidName(){
+      return this.playlist.name && this.playlist.name.split(' ').join('') !== '';
+    },
     save(){
+      if (!this.hasValidName()){
+        this.error = 'Donnez un nom à votre playlist !';
+        this.$refs.editInput.focus();
+        return false;
+      }
+      if (this.deleteIds.length){
+        this.music({action:'remove', from:'playlist', ids:this.deleteIds, playlistId:this.playlist.id});
+        this.deleteIds = [];
+      }
       var playlists = this.$store.getters['manageStore/getPlaylists'];
       var index = playlists.findIndex(playlist => playlist.id === this.playlist.id);
       if (index === -1){
@@ -75,25 +107,71 @@ export default {
       }
       this.setPlaylists(playlists);
       this.changeMode();
+      
+      //reload manually to avoid auto-save
+      var playlistStored = this.getPlaylist(this.id);
+      this.playlist = {
+        id:playlistStored.id,
+        name:playlistStored.name,
+        musics:playlistStored.musics,
+      };
+
+      return true;
+    },
+    back(confirmed, save){
+      function comparePlaylists(p1, p2){
+        return p1.id === p2.id && p1.name === p2.name && p1.musics === p2.musics;
+      }
+      //if save fail, cancel back
+      if (confirmed && save ){
+        if (!this.save()){
+          this.popupVisible = false;
+          return;
+        }
+      }
+      var playlistStored = this.getPlaylist(this.playlist.id);
+      //If playlist has been modified and has a valid name or has not an empty music list
+      if (this.mode === 'edit' && !confirmed && !comparePlaylists(this.playlist, playlistStored) && (this.hasValidName() || playlistStored.name !== '')){
+        this.popupText = 'Sauvegarder les modifications ?';
+        this.popupParams = {
+          okAction:() => this.back(true, true), 
+          cancelAction:() => this.back(true),
+          cancelText:'Ignorer'
+        }
+        this.popupVisible = true;
+      }else{
+        confirmed = true;
+      }
+      if (confirmed){
+        this.$router.go(-1);
+      }
     },
     changeMode(){
       this.mode = this.mode === 'edit' ? '' : 'edit';
       if (this.mode === 'edit'){
-        this.$nextTick(() => this.$refs.editInput.focus())
+        this.$nextTick(() => this.$refs.editInput.focus());
       }
     },
-    ...mapActions({
-      deletePlaylist:'manageStore/deletePlaylist'
-    })
+    deleteFromPlaylist(id){
+      this.deleteIds.push(id);
+      
+      this.playlist.musics = this.playlist.musics.filter(musicId => musicId !== id);
+    }
   },
   computed:{
      ...mapGetters({
       getPlaylist: 'manageStore/getPlaylist',
       getMusic: 'manageStore/getMusic'
-    }),
+    })
   },
   mounted(){
-    this.playlist = this.getPlaylist(this.id);
+    //load manually to avoid auto-save
+    var playlistStored = this.getPlaylist(this.id);
+    this.playlist = {
+      id:playlistStored.id,
+      name:playlistStored.name,
+      musics:playlistStored.musics,
+    };
     this.editInput = this.$refs.editInput;
   }
 }

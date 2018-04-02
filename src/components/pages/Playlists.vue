@@ -16,7 +16,6 @@
 </template>
 
 <script>
-      /**/
 import PlaylistItem from '../components/PlaylistItem'
 import {mapGetters} from 'vuex'
 export default {

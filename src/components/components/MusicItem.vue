@@ -13,8 +13,13 @@
       <span class="music-author">{{music.author}}</span>
       <span class="music-duration">{{hmsDuration(music.duration)}}</span>
     </div>
-    <svg v-if="page !== 'favorite'" class="favorite-link" :class="music.favorite ? 'favorite' : ''" viewBox="0 0 38.394 35.2" @click="addToFavorite()"><use xlink:href="#icon-favorite"></use></svg>
-    <svg class="submenu-link" viewBox="0 0 7.234 31.32" @click="submenuVisible = !submenuVisible"><use xlink:href="#icon-submenu"></use></svg>
+
+    <svg v-if="page !== 'favorite' && !(page === 'playlist' && mode === 'edit')" class="favorite-link" :class="music.favorite ? 'favorite' : ''" viewBox="0 0 38.394 35.2" @click="addToFavorite()"><use xlink:href="#icon-favorite"></use></svg>
+
+    <svg  v-if="!(page === 'playlist' && mode === 'edit')" class="submenu-link" viewBox="0 0 7.234 31.32" @click="submenuVisible = !submenuVisible"><use xlink:href="#icon-submenu"></use></svg>
+
+    <svg v-if="page === 'playlist' && mode === 'edit'" class="remove-link" viewBox="0 0 31.799 35.394" @click="deleteFromRender()"><use xlink:href="#icon-next"></use></svg>
+
     <SubMenu v-if="submenuVisible" :links="links" @closeMenu="submenuVisible = false"></SubMenu>
     <Popup v-if="popupVisible" :params="popupParams">
       <ul class="selection">
@@ -37,7 +42,8 @@ export default {
   props:{
     music:Object,
     page:String,
-    playlistId:String
+    playlistId:String,
+    mode:String
   },
   components: {
     PlateformIcon,
@@ -78,12 +84,15 @@ export default {
       return h+m+':'+s;
     },
     addToPlaylists(){
-      this.musicAction({action:'add', musicId:this.music.id, playlistIds:this.checkedPlaylists});
+      this.musicAction({action:'add', to:'playlist', musicId:this.music.id, playlistIds:this.checkedPlaylists});
       this.popupVisible = false;
     },
     addToFavorite(){
       this.musicAction({action:'add', to:'favorite', musicId:this.music.id, source:this.source, music:this.music});
       this.$emit('refresh', true);
+    },
+    deleteFromRender() {
+      this.$emit('delete', true);
     }
   },
   computed:{
@@ -100,7 +109,7 @@ export default {
     }
     if (this.page === 'playlist'){
       this.links.push({text:'Supprimer de la playlist', 
-        action: () => this.musicAction({action:'remove', from:'playlist', musicId:this.music.id, playlistId:parseInt(this.playlistId)})});
+        action: () => this.musicAction({action:'remove', from:'playlist', ids:[this.music.id], playlistId:parseInt(this.playlistId)})});
     }
     this.source = this.page === 'search' ? this.page : '';
   },
@@ -153,11 +162,13 @@ export default {
 .music-title{
   font-weight:bold;
 }
-.favorite-link{
+.favorite-link, .remove-link{
   display:inline-block;
   vertical-align: middle;
   width:8%;
   margin-right:4%;
+}
+.favorite-link{
   opacity:0.2;
 }
 .favorite-link.favorite{
