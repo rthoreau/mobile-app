@@ -17,14 +17,19 @@
 
     <div class="page-content">
       <span v-if="mode !== 'edit' && !playlist.name">Cette playlist semble ne plus exister !<br><router-link to="/Playlists">Revenir aux playlists</router-link></span>
-      <MusicItem 
-      v-for="(musicId, index) in (mode === 'edit' ? playlist.musics : getPlaylist(id).musics)" 
-      :key="index" 
-      :music="getMusic(musicId)"
-      :playlistId="id"
-      :page="'playlist'"
-      :mode="mode"
-      @delete="deleteFromPlaylist(musicId)"></MusicItem>
+      <draggable v-model="playlist.musics" :options="{draggable:'.editing'}">
+        <transition-group>
+          <MusicItem 
+          v-for="(musicId, index) in (mode === 'edit' ? playlist.musics : getPlaylist(id).musics)" 
+          :key="index" 
+          :music="getMusic(musicId)"
+          :playlistId="id"
+          :page="'playlist'"
+          :mode="mode"
+          :class="mode === 'edit' ? 'editing' : ''"
+          @delete="deleteFromPlaylist(musicId)"></MusicItem>
+        </transition-group>
+      </draggable>
       <ErrorMessage :error="error" v-if="error" @closeMessage="error = false"/>
     </div>
     <Popup v-if="popupVisible" :params="popupParams">
@@ -39,13 +44,15 @@ import MusicItem from '../components/MusicItem'
 import SubMenu from '../components/SubMenu'
 import ErrorMessage from '../components/ErrorMessage'
 import Popup from '../components/Popup'
+import draggable from 'vuedraggable'
 export default {
   name: 'Playlist',
   components: {
     MusicItem,
     SubMenu,
     Popup,
-    ErrorMessage
+    ErrorMessage,
+    draggable
   },
   data () {
     return {
@@ -180,12 +187,13 @@ export default {
 <style>
 #playlist .page-header{
   padding-left:0.4rem;
+  font-size:0;
 }
-input.page-title{
+#playlist input.page-title{
   background-color:transparent;
   height:1.5em;
-  margin:0.6rem 0.2rem;
-  width:70%;
+  margin:0.6rem 2%;
+  width:60%;
   outline:none;
   vertical-align:middle;
 }
@@ -202,5 +210,12 @@ background-color:rgba(255,255,255,0.2);
   color:white;
   font-size:1.4rem;
   padding:0 0.5rem;
+  width:18%;
+}
+.sortable-chosen{
+  background-color:rgba(0,0,0,0.3);
+}
+.sortable-ghost{
+  opacity:0.3;
 }
 </style>

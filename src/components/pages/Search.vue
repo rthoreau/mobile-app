@@ -78,7 +78,7 @@ export default {
     outline:none;
     color:white;
     border-bottom:2px solid transparent;
-    width:50%;
+    width:56%;
     transition:width 0.8s;
     vertical-align: middle;
     padding:0.1rem 2%;

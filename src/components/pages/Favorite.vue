@@ -5,7 +5,7 @@
     <!--<SubMenu v-if="submenuVisible" :links="links" @closeMenu="submenuVisible = false"></SubMenu>-->
     <div class="page-content">
       <MusicItem 
-      v-for="(data, index) in getMusics" 
+      v-for="(data, index) in getFavorites" 
       :key="index" 
       :music="data"
       :page="'favorite'"></MusicItem>
@@ -34,7 +34,7 @@ export default {
   },
   computed:{
      ...mapGetters({
-      getMusics: 'manageStore/getMusics'
+      getFavorites: 'manageStore/getFavorites'
     })
   }
 }

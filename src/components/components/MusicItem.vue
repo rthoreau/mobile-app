@@ -1,5 +1,8 @@
 <template>
-  <div class="music-item item" :class="submenuVisible ? 'active' : ''">
+  <div class="music-item item" :class="classe">
+
+    <svg v-if="page === 'playlist' && mode === 'edit'" class="move-link" viewBox="0 0 31.909 35.383"><use xlink:href="#icon-pause"></use></svg>
+
     <div class="music-plateform" :class="music.plateform" @click="setCurrentMusic(music.id)">
       <PlateformIcon :plateform="music.plateform"/>
     </div>
@@ -36,7 +39,7 @@ import {mapActions, mapGetters} from 'vuex'
 import PlateformIcon from './PlateformIcon'
 import SubMenu from './SubMenu'
 import Popup from '../components/Popup'
-
+//TODO show on music item if playing
 export default {
   name: 'MusicItem',
   props:{
@@ -66,7 +69,8 @@ export default {
         title:'Ajouter la musique dans...',
         okAction:() => this.addToPlaylists(), 
         cancelAction:() => this.popupVisible = false
-      }
+      },
+      classe:''
     }
   },
   methods:{
@@ -93,11 +97,18 @@ export default {
     },
     deleteFromRender() {
       this.$emit('delete', true);
+    },
+    setClass(){
+      this.classe = this.submenuVisible ? 'active' : '';
+      if (typeof this.getCurrentMusic !== "undefined"){
+        this.classe += this.music.id === this.getCurrentMusic.id ? ' playing' : '';
+      }
     }
   },
   computed:{
      ...mapGetters({
-      getMusic: 'manageStore/getMusic'
+      getMusic: 'manageStore/getMusic',
+      getCurrentMusic: 'manageStore/getCurrentMusic'
     }),
   },
   mounted() {
@@ -112,9 +123,13 @@ export default {
         action: () => this.musicAction({action:'remove', from:'playlist', ids:[this.music.id], playlistId:parseInt(this.playlistId)})});
     }
     this.source = this.page === 'search' ? this.page : '';
+    this.setClass();
   },
   watch:{
-    popupVisible: this.checkedPlaylists = []
+    popupVisible: this.checkedPlaylists = [],
+    submenuVisible: function (){this.setClass()},
+    getCurrentMusic: function (){this.setClass()},
+    mode: function (){this.setClass()},
   }
 }
 </script>
@@ -162,16 +177,28 @@ export default {
 .music-title{
   font-weight:bold;
 }
-.favorite-link, .remove-link{
+.favorite-link, .remove-link, .move-link{
   display:inline-block;
   vertical-align: middle;
   width:8%;
+}
+.favorite-link{
   margin-right:4%;
+}
+.move-link{
+  width:4%;
+  margin-right:5%;
 }
 .favorite-link{
   opacity:0.2;
 }
 .favorite-link.favorite{
   opacity:1;
+}
+.editing .music-plateform{
+  left:12%;
+}
+.editing .music-content{
+  width:54%;
 }
 </style>
