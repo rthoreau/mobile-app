@@ -17,7 +17,7 @@
 
     <div class="page-content">
       <span v-if="mode !== 'edit' && !playlist.name">Cette playlist semble ne plus exister !<br><router-link to="/Playlists">Revenir aux playlists</router-link></span>
-      <draggable v-model="playlist.musics" :options="{draggable:'.editing'}">
+      <draggable v-model="playlist.musics" :options="{draggable:'.editing', scroll: true}">
         <transition-group>
           <MusicItem 
           v-for="(musicId, index) in (mode === 'edit' ? playlist.musics : getPlaylist(id).musics)" 
@@ -212,10 +212,10 @@ background-color:rgba(255,255,255,0.2);
   padding:0 0.5rem;
   width:18%;
 }
-.sortable-chosen{
+.item.sortable-chosen{
   background-color:rgba(0,0,0,0.3);
 }
-.sortable-ghost{
+.item.sortable-ghost{
   opacity:0.3;
 }
 </style>

@@ -1,31 +1,35 @@
 <template>
-  <div id="appPlayer">
-    <div class="progress" :style="currentTimeValue"></div>
+  <div id="appPlayer" :class="expandClass">
+    <div class="player-container">
+      <div class="progress" :style="currentTimeValue"></div>
 
-    <div class="music-plateform" v-bind:class="getCurrentMusic.plateform">
-      <PlateformIcon v-bind:plateform="getCurrentMusic.plateform"/>
+      <div class="music-plateform" v-bind:class="getCurrentMusic.plateform">
+        <PlateformIcon v-bind:plateform="getCurrentMusic.plateform"/>
+      </div>
+
+      <div class="video-container">
+        <transition name="appear">
+          <youtube class="video" :players-vars="{start: 0, autoplay: 0, controls:0}" :player-width="320" :player-height="240" @ready="ready" @playing="playing" @buffering="buffering" @ended="ended" v-show="player && refresh"></youtube>
+        </transition>
+        <transition name="appear">
+          <img v-bind:src="getCurrentMusic.thumbnail" alt="" class="video" v-if="player && refresh">
+        </transition>
+        <div class="overlay"></div>
+      </div>
+
+      <button @click="playPause()" class="play">
+        <transition name="switch" mode="in-out">
+            <svg viewBox="0 0 31.908 35.381" v-if="paused" key="play"><use xlink:href="#icon-play"></use></svg>
+            <svg viewBox="0 0 31.909 35.383" v-if="!paused" key="pause"><use xlink:href="#icon-pause"></use></svg>
+        </transition>
+      </button>
+
+      <button @click="nextVideo()" class="next">Next</button>
+      <button @click="test()" class="next">test</button>
+      <span>{{hmsDuration(currentTime)}} / {{hmsDuration(duration)}}</span>
+      <button class="expand-link" @click="expand()"><svg viewBox="0 0 31.908 35.381"><use xlink:href="#icon-next" ></use></svg></button>
     </div>
-
-    <div class="video-container">
-      <transition name="appear">
-        <youtube class="video" :players-vars="{start: 0, autoplay: 0, controls:0}" :player-width="320" :player-height="240" @ready="ready" @playing="playing" @buffering="buffering" @ended="ended" v-show="player && refresh"></youtube>
-      </transition>
-      <transition name="appear">
-        <img v-bind:src="getCurrentMusic.thumbnail" alt="" class="video" v-if="player && refresh">
-      </transition>
-      <div class="overlay"></div>
-    </div>
-
-    <button @click="playPause()" class="play">
-      <transition name="switch" mode="in-out">
-          <svg viewBox="0 0 31.908 35.381" v-if="paused" key="play"><use xlink:href="#icon-play"></use></svg>
-          <svg viewBox="0 0 31.909 35.383" v-if="!paused" key="pause"><use xlink:href="#icon-pause"></use></svg>
-      </transition>
-    </button>
-
-    <button @click="nextVideo()" class="next">Next</button>
-    <button @click="test()" class="next">test</button>
-    <span>{{hmsDuration(currentTime)}} / {{hmsDuration(duration)}}</span>
+    <WaitingLine></WaitingLine>
   </div>
 </template>
 
@@ -34,6 +38,7 @@
 //https://github.com/kaorun343/vue-youtube-embed
 import Vue from 'vue'
 import PlateformIcon from './components/PlateformIcon'
+import WaitingLine from './pages/WaitingLine'
 import VueYouTubeEmbed from 'vue-youtube-embed'
 import { getIdFromURL/*, getTimeFromURL */} from 'vue-youtube-embed'
 import {mapGetters, mapActions} from 'vuex'
@@ -42,7 +47,8 @@ Vue.use(VueYouTubeEmbed)
 export default {
   name: 'App_player',
   components: {
-    PlateformIcon
+    PlateformIcon,
+    WaitingLine
   },
   data(){
     return{
@@ -57,7 +63,8 @@ export default {
       currentTimeValue:'',
       currentTimeInterval: '',
       progressInterval:'',
-      refresh:true
+      refresh:true,
+      expandClass:''
     }
   },
   methods:{
@@ -155,6 +162,11 @@ export default {
     },
     test(){
       this.player.seekTo(this.currentTime + 50);
+    },
+    expand(){
+      //TODO quand expand, changer de route
+      this.expandClass = this.expandClass === '' ? 'expanded' : '';
+      this.$emit('expanded', (this.expandClass !== ''));
     }
   },
   mounted(){
@@ -207,11 +219,18 @@ export default {
   bottom:0;
   height:3.85rem;
   width:100%;
-  background-color:#4b89dc;
-  padding:0.5rem 4%;
+  background:linear-gradient(to bottom, #4b89dc, #4b89dc 4rem, #18222d 4rem, #18222d);
   text-align:left;
   color:white;
   z-index:100;
+  transition:height 0.5s;
+}
+.player-container{
+  padding:0.5rem 4%;
+}
+#appPlayer.expanded{
+  box-shadow:inset -5px 8px 15px -10px black;
+  height:calc(100% - 4rem);
 }
 .progress{
   position:absolute;
@@ -221,7 +240,7 @@ export default {
   background-color:white;
   transition:width 0.5s linear;
 }
-#appPlayer .music-plateform{
+.player-container .music-plateform{
   top:0.5rem;
   height:2.85rem;
   position:static;
@@ -259,15 +278,13 @@ export default {
   position:relative;
   display:inline-block;
   vertical-align:top;
-  height:100%;
   width:2rem;
 }
 #appPlayer button svg{
   position:absolute;
-  height:60%;
+  height:1.8rem;
   left:50%;
-  top:50%;
-  transform:translate(-50%,-50%);
+  top:0.5rem;
 }
 
 .switch-leave-active {
@@ -276,5 +293,15 @@ export default {
 .switch-enter,
 .switch-leave-to{
   opacity: 0;
+}
+#appPlayer.sortable-drag{
+  width:300%!important;
+  left:-50%!important;
+}
+#appPlayer.sortable-drag *{
+  display:none;
+}
+.expand-link{
+  height:1.5rem;
 }
 </style>

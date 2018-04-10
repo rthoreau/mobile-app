@@ -97,20 +97,33 @@
       </defs>
     </svg>
     <AppHeader></AppHeader>
-    <router-view class="page"></router-view>
-    <AppPlayer></AppPlayer>
+    <router-view class="page" :class="playerExpanded ? 'hidden': ''"></router-view>
+    <!--<draggable>
+      <transition-group>-->
+    <AppPlayer @expanded="expand"></AppPlayer>
+      <!--</transition-group>
+    </draggable>-->
   </div>
 </template>
 
 <script>
 import AppHeader from './components/AppHeader.vue'
 import AppPlayer from './components/AppPlayer.vue'
-
 export default {
   name: 'app',
   components: {
     AppHeader,
     AppPlayer
+  },
+  data (){
+    return{
+      playerExpanded:false
+    }
+  },
+  methods:{
+    expand(active){
+      this.playerExpanded = active;
+    }
   }
 }
 </script>
@@ -137,6 +150,11 @@ body{
   position:relative;
   height:100%;
   z-index:0;
+  transition:height 0.5s;
+}
+.page.hidden{
+  height:0;
+  overflow:hidden;
 }
 .page-header{
   position:fixed;

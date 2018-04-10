@@ -61,7 +61,6 @@ export default {
       source:'',
       checkedPlaylists:[],
       links:[
-        {text:'Ajouter à la file', action:() => console.log('TODO')},
         {text:'Ajouter à une playlist', action: () => this.popupVisible = true}
       ],
       popupVisible:false,
@@ -115,6 +114,11 @@ export default {
     setTimeout(() => {
       this.loaded = true;
     }, 1000);
+    if (this.page === 'waitingLine'){
+      this.links.push({text:'Retirer de la file', action:() => console.log('TODO')});
+    }else{
+      this.links.push({text:'Ajouter à la file', action:() => console.log('TODO')});
+    }
     if (this.music.favorite && this.page === 'favorite'){
       this.links.push({text:'Supprimer des favoris', action: () => this.musicAction({action:'remove', from:'favorite', ids:[this.music.id]})});
     }
