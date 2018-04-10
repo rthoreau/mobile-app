@@ -115,13 +115,13 @@ export default {
     AppHeader,
     AppPlayer
   },
-  data (){
-    return{
-      playerExpanded:false
+  data () {
+    return {
+      playerExpanded: false
     }
   },
-  methods:{
-    expand(active){
+  methods: {
+    expand (active) {
       this.playerExpanded = active;
     }
   }

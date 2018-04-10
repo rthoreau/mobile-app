@@ -28,12 +28,12 @@ export default {
   components: {
     SubMenu
   },
-  data(){
-    return{
+  data () {
+    return {
       submenuVisible: false,
-      links:[{action:'', text:'Soon more features here'}]
+      links: [{action: '', text: 'Soon more features here'}]
     }
-  },
+  }
 }
 </script>
 

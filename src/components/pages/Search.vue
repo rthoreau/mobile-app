@@ -19,7 +19,7 @@
       v-bind:page="'search'"
       @refresh="search(true)"></MusicItem>
       <p v-if="searchResult.length === 0">You just want your music ?<br> Change source to your phone !</p>
-      <ErrorMessage :error="error" v-if="error" @closeMessage="error = false"/>
+      <ErrorMessage :error="error" v-if="error" @closeMessage="error = false"></ErrorMessage>
     </div>
   </div>
 </template>
@@ -38,13 +38,13 @@ export default {
     return {
       searchValue: '',
       searchResult: [],
-      error:false
+      error: false
     }
   },
   methods: {
     search (refresh) {
       var searchValueParsed = this.searchValue.toLowerCase()
-      if (!refresh){
+      if (!refresh) {
         if (searchValueParsed.split(' ').join('').length < 3) {
           this.error = 'Entrez au moins 3 caractères !';
           return;
@@ -55,16 +55,16 @@ export default {
     focusSearch () {
       if (this.searchValue.length) {
         this.search()
-      }else {
+      } else {
         this.$refs.searchInput.focus()
       }
     }
   },
-  computed:{
-     ...mapGetters({
+  computed: {
+    ...mapGetters({
       getSearchResult: 'manageStore/getSearchResult'
-    }),
-  },
+    })
+  }
 }
 </script>
 

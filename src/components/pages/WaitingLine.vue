@@ -24,8 +24,8 @@ export default {
     return {
     }
   },
-  computed:{
-     ...mapGetters({
+  computed: {
+    ...mapGetters({
       getWaitingLine: 'manageStore/getWaitingLine',
       getMusic: 'manageStore/getMusic'
     })

@@ -5,7 +5,7 @@
         <span class="title">{{defaultParams.title}}</span>
       </header>
       <div class="container">
-        <slot/>
+        <slot></slot>
       </div>
       <footer>
         <button @click="defaultParams.okAction">{{defaultParams.okText}}</button>
@@ -18,23 +18,23 @@
 <script>
 export default {
   name: 'SubMenu',
-  props:{
-    params:Object,
+  props: {
+    params: Object
   },
-  data(){
-    return{
-      defaultParams:{
-        okText:'Ok', 
-        okAction:'',
-        cancelText:'Annuler', 
-        cancelAction:'',
-        title:''
+  data () {
+    return {
+      defaultParams: {
+        okText: 'Ok',
+        okAction: '',
+        cancelText: 'Annuler',
+        cancelAction: '',
+        title: ''
       }
     }
   },
-  mounted(){
-    if(this.params){
-      this.defaultParams = Object.assign(this.defaultParams,this.params);
+  mounted () {
+    if (this.params) {
+      this.defaultParams = Object.assign(this.defaultParams, this.params)
     }
   }
 }

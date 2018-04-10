@@ -9,9 +9,9 @@
 <script>
 export default {
   name: 'PlateformIcon',
-  props:{
-    plateform:String,
-  },
+  props: {
+    plateform: String
+  }
 }
 </script>
 

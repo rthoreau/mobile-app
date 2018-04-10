@@ -4,7 +4,7 @@
       <div class="progress" :style="currentTimeValue"></div>
 
       <div class="music-plateform" v-bind:class="getCurrentMusic.plateform">
-        <PlateformIcon v-bind:plateform="getCurrentMusic.plateform"/>
+        <PlateformIcon v-bind:plateform="getCurrentMusic.plateform"></PlateformIcon>
       </div>
 
       <div class="video-container">
@@ -34,13 +34,11 @@
 </template>
 
 <script>
-
 //https://github.com/kaorun343/vue-youtube-embed
 import Vue from 'vue'
 import PlateformIcon from './components/PlateformIcon'
 import WaitingLine from './pages/WaitingLine'
-import VueYouTubeEmbed from 'vue-youtube-embed'
-import { getIdFromURL/*, getTimeFromURL */} from 'vue-youtube-embed'
+import VueYouTubeEmbed, {getIdFromURL/*, getTimeFromURL */} from 'vue-youtube-embed'
 import {mapGetters, mapActions} from 'vuex'
 
 Vue.use(VueYouTubeEmbed)
@@ -50,133 +48,133 @@ export default {
     PlateformIcon,
     WaitingLine
   },
-  data(){
-    return{
-      currentMusic:this.$store.getters['manageStore/getCurrentMusic'],
-      url:'',
+  data () {
+    return {
+      currentMusic: this.$store.getters['manageStore/getCurrentMusic'],
+      url: '',
       videoId: '',
       startTime: 15,
       player: '',
-      paused:true,
-      currentTime:0,
-      duration:0,
-      currentTimeValue:'',
+      paused: true,
+      currentTime: 0,
+      duration: 0,
+      currentTimeValue: '',
       currentTimeInterval: '',
-      progressInterval:'',
-      refresh:true,
-      expandClass:''
+      progressInterval: '',
+      refresh: true,
+      expandClass: ''
     }
   },
-  methods:{
+  methods: {
     ...mapActions({
       setCurrentMusic: 'manageStore/setCurrentMusic'
     }),
-    nextVideo(){
+    nextVideo () {
       this.setCurrentMusic('ert5784ert');
     },
-    ready(player){
+    ready (player) {
       this.player = player;
       this.loadVideoById(this.videoId);
     },
     playing () {
       this.watchTime();
-      if (this.paused){
+      if (this.paused) {
         this.paused = false;
       }
     },
-    ended(){
+    ended () {
       this.nextVideo();
     },
-    buffering(){
+    buffering () {
       console.log('buffering');
-      if (this.paused){
+      if (this.paused) {
         //this.playVideo();
       }
       this.setProgressByGet();
     },
     playPause () {
-      if (this.paused){
+      if (this.paused) {
         this.playVideo();
         this.paused = false;
-      }else{
+      } else {
         this.pauseVideo();
         this.paused = true;
       }
     },
-    playVideo(){
-      if (this.player){
+    playVideo () {
+      if (this.player) {
         this.player.playVideo();
         console.log(this.player);
       }
     },
-    pauseVideo(){
-      if (this.player){
+    pauseVideo () {
+      if (this.player) {
         this.player.pauseVideo();
         this.watchTime(false);
       }
     },
-    loadVideoById(id){
-      if (this.player){
+    loadVideoById (id) {
+      if (this.player) {
         console.log(id);
         //this.player.loadVideoById(id);
         this.setProgressByGet();
       }
     },
-    watchTime(active){
-      active = active === false ? false : true;
-      if (active){
-        if (!this.progressInterval){
+    watchTime (active) {
+      active = active !== false;
+      if (active) {
+        if (!this.progressInterval) {
           this.progressInterval = window.setInterval(this.setProgress, 500);
           this.currentTimeInterval = window.setInterval(this.setProgressByGet, 5000);
         }
-      }else{
+      } else {
         window.clearInterval(this.currentTimeInterval);
         window.clearInterval(this.progressInterval);
         this.currentTimeInterval = '';
         this.progressInterval = '';
       }
     },
-    setProgress(){
-      if (this.paused){
+    setProgress () {
+      if (this.paused) {
         this.watchTime(false);
-      }else{
+      } else {
         this.currentTime = this.currentTime + 0.5;
       }
     },
-    setProgressByGet(){
-      if (this.player){
+    setProgressByGet () {
+      if (this.player) {
         var time = this.player.getCurrentTime();
-        if (time){
+        if (time) {
           this.currentTime = time;
         }
       }
     },
-    hmsDuration(val){
-      var h = Math.floor(val/3600);
-      h = h == 0 ? '' : h + ':';
-      var m = Math.floor(val%3600/60);
+    hmsDuration (val) {
+      var h = Math.floor(val / 3600);
+      h = h === 0 ? '' : h + ':';
+      var m = Math.floor(val % 3600 / 60);
       m = m >= 10 ? m : '0' + m;
-      var s = Math.floor(val%3600%60);
+      var s = Math.floor(val % 3600 % 60);
       s = s >= 10 ? s : '0' + s;
-      return h+m+':'+s;
+      return h + m + ':' + s;
     },
-    test(){
+    test () {
       this.player.seekTo(this.currentTime + 50);
     },
-    expand(){
+    expand () {
       //TODO quand expand, changer de route
       this.expandClass = this.expandClass === '' ? 'expanded' : '';
       this.$emit('expanded', (this.expandClass !== ''));
     }
   },
-  mounted(){
+  mounted () {
     this.videoId = getIdFromURL(this.currentMusic.url);
     this.duration = this.currentMusic.duration;
   },
-  computed:{
-     ...mapGetters({
+  computed: {
+    ...mapGetters({
       getCurrentMusic: 'manageStore/getCurrentMusic'
-    }),
+    })
   },
   //TODO
   // detect onPause (modif this.paused)
@@ -185,18 +183,18 @@ export default {
   // animation hide thumbnail
   watch: {
     player: function (val) {
-      if (val){
+      if (val) {
         this.playVideo();
       }
     },
-    currentTime: function(time){
+    currentTime: function (time) {
       time = time * 100 / this.duration;
-      if (time > 100){
+      if (time > 100) {
         time = 100;
       }
-      this.currentTimeValue = "width:" + time + "%";
+      this.currentTimeValue = 'width:' + time + '%';
     },
-    getCurrentMusic: function(music){
+    getCurrentMusic: function (music) {
       this.videoId = getIdFromURL(music.url);
       this.duration = music.duration;
       this.currentTime = 0;
@@ -205,7 +203,7 @@ export default {
         this.refresh = true;
       })
     },
-    videoId: function(id){
+    videoId: function (id) {
       this.loadVideoById(id);
       this.setProgressByGet();
     }

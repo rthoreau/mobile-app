@@ -15,12 +15,12 @@ import { mixin as clickaway } from 'vue-clickaway'
 export default {
   mixins: [ clickaway ],
   name: 'SubMenu',
-  props:{
-    links:Array,
+  props: {
+    links: Array
   },
-  data(){
-    return{
-      supClass:''
+  data () {
+    return {
+      supClass: ''
     }
   },
   methods: {
@@ -28,22 +28,22 @@ export default {
       this.$emit('closeMenu', true);
       return true;
     },
-    callAction(link){
-      this.closeMenu();
-      try{
+    callAction (link) {
+      this.closeMenu()
+      try {
         link.action.call()
-      }catch{
-        console.log('Bad action in links')
+      } catch (error) {
+        console.log('Bad action in links', error)
       }
     }
   },
-  mounted(){
+  mounted () {
     var offsetHeight = this.$el.parentElement.parentElement.offsetTop;
     var scrollTop = document.scrollingElement.scrollTop;
     var screenHeight = document.scrollingElement.offsetHeight;
     var itemTop = this.$el.parentElement.offsetTop;
     var menuHeight = this.$el.offsetHeight;
-    if ((screenHeight - 3*offsetHeight) < ((itemTop - scrollTop) + menuHeight + 0.5*offsetHeight)){
+    if ((screenHeight - 3 * offsetHeight) < ((itemTop - scrollTop) + menuHeight + 0.5 * offsetHeight)) {
       this.supClass = 'top';
     }
   },

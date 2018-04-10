@@ -21,19 +21,19 @@ import {mapGetters} from 'vuex'
 export default {
   name: 'Favorite',
   components: {
-    MusicItem,
+    MusicItem
     //SubMenu
   },
   data () {
     return {
-      submenuVisible: false,
+      submenuVisible: false
       /*links:[{action: () => console.log(this.musics), text:'Do something'},
       {action:() =>  alert('Done.'), text:'Do nothing'},
       {action:() =>  alert('Something went wrong ! Try again later !'), text:'Delete all the internet'}]*/
     }
   },
-  computed:{
-     ...mapGetters({
+  computed: {
+    ...mapGetters({
       getFavorites: 'manageStore/getFavorites'
     })
   }

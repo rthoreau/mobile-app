@@ -23,42 +23,42 @@ import {mapActions, mapGetters} from 'vuex'
 import Popup from '../components/Popup'
 export default {
   name: 'MusicItem',
-  props:{
-    playlist:Object,
+  props: {
+    playlist: Object
   },
-  components:{
+  components: {
     SubMenu,
     Popup
   },
-  data(){
-    return{
-      submenuVisible:false,
-      links:[
-        {text:'Accéder à la playlist', action:'Playlist/' + this.playlist.id, mode:'router'},
-        {text:'Supprimer la playlist', action: () => this.callDeletePlaylist()}
+  data () {
+    return {
+      submenuVisible: false,
+      links: [
+        {text: 'Accéder à la playlist', action: 'Playlist/' + this.playlist.id, mode: 'router'},
+        {text: 'Supprimer la playlist', action: () => this.callDeletePlaylist()}
       ],
-      popupVisible:false,
-      popupParams:{
-        okAction:() => this.callDeletePlaylist(true), 
-        cancelAction:() => this.popupVisible = false
+      popupVisible: false,
+      popupParams: {
+        okAction: () => this.callDeletePlaylist(true),
+        cancelAction: () => this.popupVisible = false
       }
     }
   },
-  methods:{
-    callDeletePlaylist(confirmed){
+  methods: {
+    callDeletePlaylist (confirmed) {
       confirmed = confirmed || false;
-      if (confirmed){
+      if (confirmed) {
         this.deletePlaylist(this.playlist);
-      }else{
+      } else {
         this.popupVisible = true;
       }
     },
     ...mapActions({
-      deletePlaylist:'manageStore/deletePlaylist'
+      deletePlaylist: 'manageStore/deletePlaylist'
     })
   },
-  computed:{
-     ...mapGetters({
+  computed: {
+    ...mapGetters({
       getMusic: 'manageStore/getMusic'
     })
   }

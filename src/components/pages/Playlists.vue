@@ -25,18 +25,18 @@ export default {
   },
   data () {
     return {
-      nextIdLink:'',
+      nextIdLink: ''
     }
   },
-  mounted(){
-    var nextId = this.getPlaylists.length ? (parseInt(this.getPlaylists[this.getPlaylists.length -1].id) + 1) : 1;
-    this.nextIdLink = "/Playlist/" + nextId + "/edit";
+  mounted () {
+    var nextId = this.getPlaylists.length ? (parseInt(this.getPlaylists[this.getPlaylists.length - 1].id) + 1) : 1;
+    this.nextIdLink = '/Playlist/' + nextId + '/edit';
   },
-  computed:{
-     ...mapGetters({
+  computed: {
+    ...mapGetters({
       getPlaylists: 'manageStore/getPlaylists'
     })
-  },
+  }
 }
 </script>
 

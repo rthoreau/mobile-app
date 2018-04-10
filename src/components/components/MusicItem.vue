@@ -4,7 +4,7 @@
     <svg v-if="page === 'playlist' && mode === 'edit'" class="move-link" viewBox="0 0 31.909 35.383"><use xlink:href="#icon-pause"></use></svg>
 
     <div class="music-plateform" :class="music.plateform" @click="setCurrentMusic(music.id)">
-      <PlateformIcon :plateform="music.plateform"/>
+      <PlateformIcon :plateform="music.plateform"></PlateformIcon>
     </div>
     <div class="music-thumbnail-container" @click="setCurrentMusic(music.id)">
       <transition name="appear">
@@ -42,98 +42,98 @@ import Popup from '../components/Popup'
 //TODO show on music item if playing
 export default {
   name: 'MusicItem',
-  props:{
-    music:Object,
-    page:String,
-    playlistId:String,
-    mode:String
+  props: {
+    music: Object,
+    page: String,
+    playlistId: String,
+    mode: String
   },
   components: {
     PlateformIcon,
     SubMenu,
     Popup
   },
-  data(){
-    return{
-      loaded:false,
-      playlists:this.$store.getters['manageStore/getPlaylists'],
-      submenuVisible:false,
-      source:'',
-      checkedPlaylists:[],
-      links:[
-        {text:'Ajouter à une playlist', action: () => this.popupVisible = true}
+  data () {
+    return {
+      loaded: false,
+      playlists: this.$store.getters['manageStore/getPlaylists'],
+      submenuVisible: false,
+      source: '',
+      checkedPlaylists: [],
+      links: [
+        {text: 'Ajouter à une playlist', action: () => this.popupVisible = true}
       ],
-      popupVisible:false,
-      popupParams:{
-        title:'Ajouter la musique dans...',
-        okAction:() => this.addToPlaylists(), 
-        cancelAction:() => this.popupVisible = false
+      popupVisible: false,
+      popupParams: {
+        title: 'Ajouter la musique dans...',
+        okAction: () => this.addToPlaylists(),
+        cancelAction: () => this.popupVisible = false
       },
-      classe:''
+      classe: ''
     }
   },
-  methods:{
+  methods: {
     ...mapActions({
       setCurrentMusic: 'manageStore/setCurrentMusic',
-      musicAction: 'manageStore/musicAction',
+      musicAction: 'manageStore/musicAction'
     }),
-    hmsDuration(val){
-      var h = Math.floor(val/3600);
-      h = h == 0 ? '' : h + ':';
-      var m = Math.floor(val%3600/60);
+    hmsDuration (val) {
+      var h = Math.floor(val / 3600);
+      h = h === 0 ? '' : h + ':';
+      var m = Math.floor(val % 3600 / 60);
       m = m >= 10 ? m : '0' + m;
-      var s = Math.floor(val%3600%60);
+      var s = Math.floor(val % 3600 % 60);
       s = s >= 10 ? s : '0' + s;
-      return h+m+':'+s;
+      return h + m + ':' + s;
     },
-    addToPlaylists(){
-      this.musicAction({action:'add', to:'playlist', musicId:this.music.id, playlistIds:this.checkedPlaylists});
+    addToPlaylists () {
+      this.musicAction({action: 'add', to: 'playlist', musicId: this.music.id, playlistIds: this.checkedPlaylists});
       this.popupVisible = false;
     },
-    addToFavorite(){
-      this.musicAction({action:'add', to:'favorite', musicId:this.music.id, source:this.source, music:this.music});
+    addToFavorite () {
+      this.musicAction({action: 'add', to: 'favorite', musicId: this.music.id, source: this.source, music: this.music});
       this.$emit('refresh', true);
     },
-    deleteFromRender() {
+    deleteFromRender () {
       this.$emit('delete', true);
     },
-    setClass(){
+    setClass () {
       this.classe = this.submenuVisible ? 'active' : '';
-      if (typeof this.getCurrentMusic !== "undefined"){
+      if (typeof this.getCurrentMusic !== 'undefined') {
         this.classe += this.music.id === this.getCurrentMusic.id ? ' playing' : '';
       }
     }
   },
-  computed:{
-     ...mapGetters({
+  computed: {
+    ...mapGetters({
       getMusic: 'manageStore/getMusic',
       getCurrentMusic: 'manageStore/getCurrentMusic'
-    }),
+    })
   },
-  mounted() {
+  mounted () {
     setTimeout(() => {
       this.loaded = true;
     }, 1000);
-    if (this.page === 'waitingLine'){
-      this.links.push({text:'Retirer de la file', action:() => console.log('TODO')});
-    }else{
-      this.links.push({text:'Ajouter à la file', action:() => console.log('TODO')});
+    if (this.page === 'waitingLine') {
+      this.links.push({text: 'Retirer de la file', action: () => console.log('TODO')});
+    } else {
+      this.links.push({text: 'Ajouter à la file', action: () => console.log('TODO')});
     }
-    if (this.music.favorite && this.page === 'favorite'){
-      this.links.push({text:'Supprimer des favoris', action: () => this.musicAction({action:'remove', from:'favorite', ids:[this.music.id]})});
+    if (this.music.favorite && this.page === 'favorite') {
+      this.links.push({text: 'Supprimer des favoris', action: () => this.musicAction({action: 'remove', from: 'favorite', ids: [this.music.id]})});
     }
-    if (this.page === 'playlist'){
-      this.links.push({text:'Supprimer de la playlist', 
-        action: () => this.musicAction({action:'remove', from:'playlist', ids:[this.music.id], playlistId:parseInt(this.playlistId)})});
+    if (this.page === 'playlist') {
+      this.links.push({text: 'Supprimer de la playlist',
+        action: () => this.musicAction({action: 'remove', from: 'playlist', ids: [this.music.id], playlistId: parseInt(this.playlistId)})});
     }
     this.source = this.page === 'search' ? this.page : '';
     this.setClass();
   },
-  watch:{
+  watch: {
     popupVisible: this.checkedPlaylists = [],
-    submenuVisible: function (){this.setClass()},
-    getCurrentMusic: function (){this.setClass()},
-    mode: function (){this.setClass()},
+    submenuVisible: function () { this.setClass() },
+    getCurrentMusic: function () { this.setClass() },
+    mode: function () { this.setClass() }
   }
 }
 </script>

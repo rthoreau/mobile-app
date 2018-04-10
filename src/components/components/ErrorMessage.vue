@@ -8,12 +8,12 @@
 <script>
 export default {
   name: 'ErrorMessage',
-  props:{
-    error:String,
+  props: {
+    error: String
   },
-  data(){
-    return{
-      transitionClass:''
+  data () {
+    return {
+      transitionClass: ''
     }
   },
   methods: {
@@ -21,7 +21,7 @@ export default {
       this.$emit('closeMessage', true);
     }
   },
-  mounted(){
+  mounted () {
     setTimeout(() => {
       this.transitionClass = 'disappear';
     }, 3500);

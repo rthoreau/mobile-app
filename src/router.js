@@ -16,7 +16,7 @@ const router = new VueRouter({
     { path: '/Search', component: Search },
     { path: '/Playlists', component: Playlists },
     { path: '/Playlist/:id/:mode', component: Playlist },
-    { path: '/Playlist/:id', component: Playlist },
+    { path: '/Playlist/:id', component: Playlist }
   ]
 });
 
